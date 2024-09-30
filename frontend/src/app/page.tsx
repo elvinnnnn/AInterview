@@ -2,16 +2,26 @@ import React from "react";
 
 export default function Home() {
   return (
-    <div>
-      <div className="grid grid-cols-3 grid-rows-2 gap-4">
-        <div>
-          <button className="button">{">>>"}</button>
+    <div className="flex h-screen justify-center">
+      <div className="grid grid-rows-6 w-1/2">
+        <div className="flex items-end">
+          <div id="mascot" className="w-1/2 text-5xl">
+            {"( ^ 0^)/"}
+          </div>
+          <input
+            type="text"
+            placeholder="Enter job description here"
+            className="w-1/2"
+          />
         </div>
-        <div>2</div>
-        <div>3</div>
-        <div>4</div>
-        <div>5</div>
-        <div>6</div>
+        <div
+          id="chatbox"
+          className="flex row-span-3 border-solid border-2"
+        ></div>
+        <div id="chatinput">
+          <input type="text" placeholder="Your response..." className="w-3/4" />
+          <button className="button w-1/4">{">>>"}</button>
+        </div>
       </div>
     </div>
   );
