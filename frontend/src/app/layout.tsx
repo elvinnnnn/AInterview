@@ -14,9 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={fira.className}>
-      <div className="grid grid-rows-3">
-        <body>{children}</body>
-      </div>
+      <body>{children}</body>
     </html>
   );
 }

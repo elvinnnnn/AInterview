@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.preserve-whitespace {
+  white-space: pre; /* or use 'pre' if you want to preserve only spaces and newlines */
+}
+
 .button {
   background-color: white;
   border-width: 1px;
@@ -11,4 +15,51 @@
   border-style: solid;
   border-width: 2px;
   border-color: black;
+}
+
+#bot-textbox {
+  background-color: #7c6fec;
+  color: white;
+  border-radius: 25px;
+}
+
+.user-textbox {
+  background-color: white;
+  color: #584cd7;
+  border-radius: 25px;
+}
+
+#chat-box {
+  background-color: #584cd7;
+  border-color: white;
+  border-width: 2px;
+  border-radius: 15px;
+}
+
+@keyframes jump {
+  0% {
+    padding-bottom: 2px;
+  }
+  100% {
+    padding-bottom: 5px;
+  }
+}
+.mascot {
+  color: white;
+}
+.animate-jump {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+}
+
+.animate-jump-delayed {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+  animation-delay: 400ms;
+}
+
+body {
+  background-color: #342d3a;
 }
