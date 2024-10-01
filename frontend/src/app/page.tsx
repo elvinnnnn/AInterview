@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from "react";
+import axios from "axios";
+import { Just_Me_Again_Down_Here } from "next/font/google";
 // import Image from "next/image";
 
 interface Message {
@@ -12,9 +14,15 @@ export default function Home() {
   const [chat, setChat] = useState<Array<Message>>([]);
   const [count, setCount] = useState<number>(0);
   const [textInput, setTextInput] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [botResponse, setBotResponse] = useState<string>("");
 
   const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextInput(e.target.value);
+  };
+
+  const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setDescription(e.target.value);
   };
 
   const handleCount = () => {
@@ -22,13 +30,34 @@ export default function Home() {
     return count;
   };
 
-  const handleSend = () => {
+  const handleSendChat = () => {
     if (textInput != "") {
       setChat([
         ...chat,
         { text: textInput, sender: "user", key: handleCount() },
       ]);
       setTextInput("");
+    }
+  };
+
+  const handleSendDescription = async () => {
+    // Send description to backend OpenAI API
+    try {
+      const res = await axios.get("http://localhost:5000/description", {
+        params: {
+          description: description,
+        },
+      });
+      setBotResponse(res.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSendDescription();
+      setDescription("");
     }
   };
 
@@ -45,6 +74,9 @@ export default function Home() {
           </div>
           <div className="w-1/2" />
           <input
+            value={description}
+            onChange={handleDescriptionChange}
+            onKeyUp={handleEnter}
             type="text"
             placeholder="Enter job description here"
             className="w-1/2"
@@ -53,9 +85,9 @@ export default function Home() {
         <div id="chat-box" className="relative flex row-span-3 mx-16">
           <div
             id="bot-textbox"
-            className="absolute flex items-center justify-center w-10/12 h-1/3 m-4 shadow-lg"
+            className="absolute flex items-center justify-center w-10/12 h-1/3 m-4 shadow-lg p-5"
           >
-            Why do you want to work at _____?
+            {botResponse}
           </div>
           {chat.map((msg) => (
             <div
@@ -74,7 +106,7 @@ export default function Home() {
             placeholder="Your response..."
             className="w-3/4"
           />
-          <button className="button w-1/4" onClick={handleSend}>
+          <button className="button w-1/4" onClick={handleSendChat}>
             {">>>"}
           </button>
         </div>
