@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { Just_Me_Again_Down_Here } from "next/font/google";
 // import Image from "next/image";
 
 interface Message {
@@ -30,24 +29,33 @@ export default function Home() {
     return count;
   };
 
-  const handleSendChat = () => {
-    if (textInput != "") {
-      setChat([
-        ...chat,
-        { text: textInput, sender: "user", key: handleCount() },
-      ]);
-      setTextInput("");
+  // Implementation for storing these sent chats not complete! Currently just moves on to the next question.
+  // Need to think about whether to store an object that has questions+responses together on the frontend or backend. (probably backend)
+  const handleSendChat = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/question");
+      setBotResponse(res.data);
+      if (textInput != "") {
+        setChat([
+          ...chat,
+          { text: textInput, sender: "user", key: handleCount() },
+        ]);
+        setTextInput("");
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
   const handleSendDescription = async () => {
     // Send description to backend OpenAI API
     try {
-      const res = await axios.get("http://localhost:5000/description", {
+      const res = await axios.get("http://localhost:5000/dialogues", {
         params: {
           description: description,
         },
       });
+      console.log(res.data);
       setBotResponse(res.data);
     } catch (error) {
       console.error(error);
