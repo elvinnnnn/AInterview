@@ -23,14 +23,36 @@
   border-radius: 25px;
 }
 
-.user-textbox {
+#bot-textbox-arrow {
+  width: 32px;
+  height: 32px;
+  margin-top: -16px;
+  background-color: #7c6fec;
+  clip-path: polygon(50% 50%, 0% 100%, 100% 100%);
+}
+
+#user-textbox-arrow {
+  width: 32px;
+  height: 32px;
+  background-color: white;
+  margin-right: -16px;
+  clip-path: polygon(0% 0%, 50% 50%, 0% 100%);
+}
+
+#user-textbox {
   background-color: white;
   color: #584cd7;
-  border-radius: 25px;
+  border-radius: 20px;
 }
 
 #chat-box {
-  background-color: #584cd7;
+  background: rgb(82, 55, 180);
+  background: linear-gradient(
+    347deg,
+    rgba(82, 55, 180, 1) 0%,
+    rgba(88, 76, 215, 1) 31%,
+    rgba(69, 67, 245, 1) 100%
+  );
   border-color: white;
   border-width: 2px;
   border-radius: 15px;
@@ -40,6 +62,18 @@
   color: white;
   padding: 10px;
   padding-left: 15px;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+
+#cog {
+  opacity: 0.25;
+  margin: 5px;
+}
+
+#cog:hover {
+  animation: cog-turn 0.2s linear forwards;
 }
 
 @keyframes jump {
@@ -50,9 +84,33 @@
     padding-bottom: 5px;
   }
 }
+
+@keyframes cog-turn {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(30deg);
+  }
+}
+
+@keyframes expand {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
 .mascot {
   color: white;
+  pointer-events: none;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
+
 .animate-jump {
   animation: jump 1s infinite;
   animation-timing-function: linear;
