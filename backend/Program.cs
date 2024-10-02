@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Mvc;
 using OpenAI.Chat;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +23,9 @@ app.UseCors("ainterview");
 DotNetEnv.Env.Load();
 
 var messages = new List<ChatMessage>{
-    new SystemChatMessage("You are a job interviewer. You will be provided with a job description. First give a greeting, then formulate 10 questions based on the job description, but also include general questions at the start. Number these questions. At the end give a farewell and thank them for coming.")
+    new SystemChatMessage("You are a job interviewer. You will be provided with a job description. First give a greeting, then formulate 10 questions based on the job description, but also include general questions at the start. Number these questions by simply providing an integer, do NOT include any words/characters. At the end give a farewell and thank them for coming.")
 };
 
-var questionsAndFarewell = new List<string>();
 int currentQuestionIndex = 0;
 
 ChatCompletionOptions options = new()
@@ -57,36 +59,50 @@ ChatCompletionOptions options = new()
     )
 };
 
+static void DialogueToDB(Dialogue dialogue) {
+    string jsonString = JsonSerializer.Serialize(dialogue, new JsonSerializerOptions { WriteIndented = true });
+    File.WriteAllText("db.json", jsonString);
+}
+
 ChatClient client = new(model: "gpt-4o-mini", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-app.MapGet("/dialogues", async (string description) => {
+app.MapPost("/dialogues", async ([FromBody] string description) => {
     messages.Add(new UserChatMessage(description));
     ChatCompletion completion = await client.CompleteChatAsync(messages, options);
     using JsonDocument structuredJson = JsonDocument.Parse(completion.Content[0].Text);
-    foreach (JsonElement stepElement in structuredJson.RootElement.GetProperty("questions").EnumerateArray())
-        {
-            var question = stepElement.GetProperty("question").GetString();
-            if (question != null)
-            {
-                questionsAndFarewell.Add(question);
-            }
-            // Console.WriteLine($"  - Number: {stepElement.GetProperty("number").GetString()}");
-            // Console.WriteLine($"    Question: {stepElement.GetProperty("question").GetString()}");
-        }
-    var farewell = structuredJson.RootElement.GetProperty("farewell").GetString(); 
-    if (farewell != null)
+    var dialogue = new Dialogue
     {
-        questionsAndFarewell.Add(farewell);
+        Greeting = structuredJson.RootElement.GetProperty("greeting").GetString() ?? string.Empty,
+        Farewell = structuredJson.RootElement.GetProperty("farewell").GetString() ?? string.Empty,
+        Questions = new Dictionary<int, Question>()
+    };
+    foreach (JsonElement stepElement in structuredJson.RootElement.GetProperty("questions").EnumerateArray())
+    {
+        dialogue.Questions.Add(int.Parse(stepElement.GetProperty("number").GetString() ?? "-1"), new Question
+        {
+            Text = stepElement.GetProperty("question").GetString() ?? string.Empty,
+            Answer = ""
+        });
     }
-    return structuredJson.RootElement.GetProperty("greeting").GetString();
+    DialogueToDB(dialogue);
+    return dialogue.Greeting;
 });
 
-app.MapGet("/question", () => {
-    if (currentQuestionIndex < questionsAndFarewell.Count)
+app.MapPut("/answer", ([FromBody] string answer) => {
+    string jsonString = File.ReadAllText("db.json");
+    Dialogue? dialogue = JsonSerializer.Deserialize<Dialogue>(jsonString);
+    if (dialogue == null) {
+        throw new Exception("No dialogue found");
+    }
+    if (currentQuestionIndex <= 10)
     {
-        var question = questionsAndFarewell[currentQuestionIndex];
+        if (currentQuestionIndex > 0) {
+            dialogue.Questions[currentQuestionIndex].Answer = answer;
+            jsonString = JsonSerializer.Serialize(dialogue, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText("db.json", jsonString);
+        }
         currentQuestionIndex++;
-        return question;
+        return dialogue.Questions[currentQuestionIndex].Text;
     }
     else
     {
@@ -94,4 +110,25 @@ app.MapGet("/question", () => {
     }
 });
 
+app.MapDelete("/wipe", () => {
+    var filePath = "db.json";
+    if (File.Exists(filePath))
+    {
+        File.Delete(filePath);
+    }
+});
+
 app.Run();
+
+public class Dialogue
+{
+    public required string Greeting { get; set; }
+    public required Dictionary<int, Question> Questions { get; set; }
+    public required string Farewell { get; set; }
+}
+
+public class Question
+{
+    public required string Text { get; set; }
+    public required string Answer { get; set; }
+}

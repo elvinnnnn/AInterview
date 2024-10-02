@@ -31,3 +31,4 @@
 /root/Stuff/AInterview/backend/obj/Debug/net8.0/backend.csproj.Up2Date
 /root/Stuff/AInterview/backend/bin/Debug/net8.0/DotNetEnv.dll
 /root/Stuff/AInterview/backend/bin/Debug/net8.0/Sprache.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/db.json

@@ -3,15 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 // import Image from "next/image";
 
-interface Message {
-  text: string;
-  sender: string;
-  key: number;
-}
-
 export default function Home() {
-  const [chat, setChat] = useState<Array<Message>>([]);
-  const [count, setCount] = useState<number>(0);
   const [textInput, setTextInput] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [botResponse, setBotResponse] = useState<string>("");
@@ -24,22 +16,18 @@ export default function Home() {
     setDescription(e.target.value);
   };
 
-  const handleCount = () => {
-    setCount(count + 1);
-    return count;
-  };
-
   // Implementation for storing these sent chats not complete! Currently just moves on to the next question.
   // Need to think about whether to store an object that has questions+responses together on the frontend or backend. (probably backend)
   const handleSendChat = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/question");
+      const res = await axios.put("http://localhost:5000/answer", textInput, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log(res);
       setBotResponse(res.data);
       if (textInput != "") {
-        setChat([
-          ...chat,
-          { text: textInput, sender: "user", key: handleCount() },
-        ]);
         setTextInput("");
       }
     } catch (error) {
@@ -50,11 +38,15 @@ export default function Home() {
   const handleSendDescription = async () => {
     // Send description to backend OpenAI API
     try {
-      const res = await axios.get("http://localhost:5000/dialogues", {
-        params: {
-          description: description,
-        },
-      });
+      const res = await axios.post(
+        "http://localhost:5000/dialogues",
+        description,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(res.data);
       setBotResponse(res.data);
     } catch (error) {
@@ -69,8 +61,24 @@ export default function Home() {
     }
   };
 
+  const reset = async () => {
+    try {
+      axios.delete("http://localhost:5000/wipe");
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex h-screen justify-center">
+      <button
+        onClick={reset}
+        id="title"
+        className="fixed top-0 left-0 text-4xl font-bold"
+      >
+        AInterview
+      </button>
       <div className="grid grid-rows-5 w-1/2">
         <div className="relative flex items-end">
           <div className="mascot animate-jump preserve-whitespace absolute text-5xl">
@@ -91,20 +99,19 @@ export default function Home() {
           />
         </div>
         <div id="chat-box" className="relative flex row-span-3 mx-16">
-          <div
-            id="bot-textbox"
-            className="absolute flex items-center justify-center w-10/12 h-1/3 m-4 shadow-lg p-5"
-          >
-            {botResponse}
-          </div>
-          {chat.map((msg) => (
+          {botResponse != "" ? (
             <div
-              className="user-textbox absolute flex bottom-0 right-0 items-center justify-center p-5 m-4 shadow-lg"
-              key={msg.key}
+              id="bot-textbox"
+              className="absolute flex items-center justify-center w-10/12 h-1/3 m-4 shadow-lg p-5"
             >
-              {msg.text}
+              {botResponse}
             </div>
-          ))}
+          ) : null}
+          {textInput != "" ? (
+            <div className="user-textbox absolute flex bottom-0 right-0 items-center justify-center p-5 m-4 shadow-lg">
+              {textInput}
+            </div>
+          ) : null}
         </div>
         <div id="chatinput" className="mx-20">
           <input

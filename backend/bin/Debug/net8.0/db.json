@@ -1,0 +1,46 @@
+{
+  "Greeting": "Hello, and thank you for coming in today!",
+  "Questions": {
+    "1": {
+      "Text": "Can you tell me about your experience in software development?",
+      "Answer": ""
+    },
+    "2": {
+      "Text": "What motivated you to apply for this role with a global construction company?",
+      "Answer": ""
+    },
+    "3": {
+      "Text": "How familiar are you with Agile methodologies, and can you share an example of how you\u0027ve used them in past projects?",
+      "Answer": ""
+    },
+    "4": {
+      "Text": "Could you describe your experience with .NET development, particularly with C# and ASP.NET?",
+      "Answer": ""
+    },
+    "5": {
+      "Text": "What types of video applications have you developed in your previous roles?",
+      "Answer": ""
+    },
+    "6": {
+      "Text": "Can you give me an overview of your experience with front-end technologies like HTML, JavaScript, and TypeScript?",
+      "Answer": ""
+    },
+    "7": {
+      "Text": "Have you worked with KnockoutJS or similar frameworks? If so, can you describe how you used them?",
+      "Answer": ""
+    },
+    "8": {
+      "Text": "What experience do you have with media processing platforms?",
+      "Answer": ""
+    },
+    "9": {
+      "Text": "Are you familiar with technologies like WebAssembly, WebCodecs, and WebAudio? How have you utilized these in your projects?",
+      "Answer": ""
+    },
+    "10": {
+      "Text": "What is your approach to maintaining code quality and ensuring efficient application performance?",
+      "Answer": ""
+    }
+  },
+  "Farewell": "Thank you for your time today, and we appreciate your interest in this position!"
+}
