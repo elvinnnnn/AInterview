@@ -1,11 +1,36 @@
-export default function Mascot() {
-  return (
+import React from "react";
+
+interface MascotProps {
+  loading: boolean;
+  session: boolean;
+}
+
+export default function Mascot({ loading, session }: MascotProps) {
+  console.log(loading);
+  return !loading ? (
     <>
-      <div className="mascot absolute animate-jump preserve-whitespace text-5xl">
-        {"  "}
-        {"^ 0^"} {"/"}
+      {!session ? (
+        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
+          {"  "}
+          {"^ -^"}
+        </div>
+      ) : (
+        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
+          {"  "}
+          {"^ 0^"} {"/"}
+        </div>
+      )}
+      <div className="mascot uninteractable absolute animate-jump-delayed preserve-whitespace text-5xl">
+        {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
       </div>
-      <div className="mascot absolute animate-jump-delayed preserve-whitespace text-5xl">
+    </>
+  ) : (
+    <>
+      <div className="mascot thinking uninteractable absolute animate-jump preserve-whitespace text-5xl">
+        {"  "}
+        {"= w="} {"o"}
+      </div>
+      <div className="mascot uninteractable absolute animate-jump-delayed preserve-whitespace text-5xl">
         {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
       </div>
     </>
