@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/root/Stuff/AInterview/backend/backend.csproj": {}
+    "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj": {}
   },
   "projects": {
-    "/root/Stuff/AInterview/backend/backend.csproj": {
+    "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/root/Stuff/AInterview/backend/backend.csproj",
+        "projectUniqueName": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
         "projectName": "backend",
-        "projectPath": "/root/Stuff/AInterview/backend/backend.csproj",
-        "packagesPath": "/root/.nuget/packages/",
-        "outputPath": "/root/Stuff/AInterview/backend/obj/",
+        "projectPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
+        "packagesPath": "C:\\Users\\elvin\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/root/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\elvin\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -51,6 +51,10 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
+            "MongoDB.Driver": {
+              "target": "Package",
+              "version": "[2.29.0, )"
+            },
             "OpenAI": {
               "target": "Package",
               "version": "[2.0.0-beta.13, )"
@@ -75,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -5,6 +5,16 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
+using MongoDB.Driver;
+using MongoDB.Bson;
+
+var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
+if (connectionString == null) {
+    Console.WriteLine("MongoDB environment variable missing");
+    Environment.Exit(0);
+}
+var db = new MongoClient(connectionString);
+var collection = db.GetDatabase("ainterview").GetCollection<BsonDocument>("dialogues");
 
 var builder = WebApplication.CreateBuilder(args);
 
