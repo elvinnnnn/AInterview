@@ -26,8 +26,6 @@ var messages = new List<ChatMessage>{
     new SystemChatMessage("You are a job interviewer. You will be provided with a job description. First give a greeting, then formulate 10 questions based on the job description, but also include general questions at the start. Number these questions by simply providing an integer, do NOT include any words/characters. At the end give a farewell and thank them for coming.")
 };
 
-int currentQuestionIndex = 0;
-
 ChatCompletionOptions options = new()
 {
     ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
@@ -72,6 +70,7 @@ app.MapPost("/dialogues", async ([FromBody] string description) => {
     using JsonDocument structuredJson = JsonDocument.Parse(completion.Content[0].Text);
     var dialogue = new Dialogue
     {
+        currentQuestionIndex = 0,
         Greeting = structuredJson.RootElement.GetProperty("greeting").GetString() ?? string.Empty,
         Farewell = structuredJson.RootElement.GetProperty("farewell").GetString() ?? string.Empty,
         Questions = new Dictionary<int, Question>()
@@ -94,20 +93,24 @@ app.MapPut("/answer", ([FromBody] string answer) => {
     if (dialogue == null) {
         throw new Exception("No dialogue found");
     }
-    if (currentQuestionIndex <= 10)
+    if (dialogue.currentQuestionIndex <= 10)
     {
-        if (currentQuestionIndex > 0) {
-            dialogue.Questions[currentQuestionIndex].Answer = answer;
+        if (dialogue.currentQuestionIndex > 0) {
+            dialogue.Questions[dialogue.currentQuestionIndex].Answer = answer;
             jsonString = JsonSerializer.Serialize(dialogue, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText("db.json", jsonString);
         }
-        currentQuestionIndex++;
-        return dialogue.Questions[currentQuestionIndex].Text;
+        dialogue.currentQuestionIndex++;
+        return dialogue.Questions[dialogue.currentQuestionIndex].Text;
     }
     else
     {
         return "Now let's give you some feedback...";
     }
+});
+
+app.MapGet("/feedback", () => {
+    
 });
 
 app.MapDelete("/wipe", () => {
@@ -122,6 +125,7 @@ app.Run();
 
 public class Dialogue
 {
+    public required int currentQuestionIndex { get; set; }
     public required string Greeting { get; set; }
     public required Dictionary<int, Question> Questions { get; set; }
     public required string Farewell { get; set; }

@@ -55,7 +55,7 @@ export default function Home() {
               <div id="bot-textbox-arrow" className="ml-26 md:ml-12"></div>
               <div
                 id="bot-textbox"
-                className="uninteractable top-0 left-0 absolute flex items-center justify-center w-10/12 h-1/3 m-3 shadow-lg p-5 overflow-wrap"
+                className="flex absolute top-0 left-0 items-center justify-center p-5 m-3 uninteractable shadow-lg"
               >
                 {botResponse}
               </div>
@@ -65,19 +65,19 @@ export default function Home() {
             <div>
               <div
                 id="user-textbox-arrow"
-                className="bottom-0 right-0 absolute mb-6"
+                className=" absolute bottom-0 right-0 mb-6"
               ></div>
               {/* need div to expand vertically up the chatbox by 1em if it reaches the end*/}
               <div
                 id="user-textbox"
-                className="uninteractable bottom-0 right-0 absolute flex items-center justify-center p-5 m-3 shadow-lg"
+                className="flex absolute bottom-0 right-0 items-center justify-center p-5 m-3 uninteractable shadow-lg"
               >
                 {textInput}
               </div>
             </div>
           ) : null}
         </div>
-        <div id="chat-input" className="mx-20 p-2 flex items-start">
+        <div id="chat-input" className="flex items-start mx-20 p-2">
           <input
             value={textInput}
             onChange={handleTextInputChange}

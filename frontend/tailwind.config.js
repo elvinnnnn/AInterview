@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const colors = require("tailwindcss/colors");
 
 module.exports = {
+  darkMode: "class",
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -10,9 +9,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        ...colors,
-      },
       spacing: {
         26: "6.5rem",
       },
