@@ -5,8 +5,10 @@ import axios from "axios";
 
 export default function Topbar({
   setBotResponse,
+  setDbId,
 }: {
   setBotResponse: React.Dispatch<React.SetStateAction<string>>;
+  setDbId: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [description, setDescription] = useState<string>("");
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,7 +30,8 @@ export default function Topbar({
         }
       );
       console.log(res.data);
-      setBotResponse(res.data);
+      setBotResponse(res.data.greeting);
+      setDbId(res.data.id);
       setIsLoading(false);
       setInSession(true);
     } catch (error) {
@@ -43,6 +46,7 @@ export default function Topbar({
       setDescription("");
     }
   };
+
   const reset = async () => {
     try {
       axios.delete("http://localhost:5000/wipe");
@@ -51,6 +55,7 @@ export default function Topbar({
       console.log(err);
     }
   };
+
   return (
     <>
       {isLoading ? (

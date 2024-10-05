@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj": {}
+    "/root/Stuff/AInterview/backend/backend.csproj": {}
   },
   "projects": {
-    "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj": {
+    "/root/Stuff/AInterview/backend/backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
+        "projectUniqueName": "/root/Stuff/AInterview/backend/backend.csproj",
         "projectName": "backend",
-        "projectPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
-        "packagesPath": "C:\\Users\\elvin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\obj\\",
+        "projectPath": "/root/Stuff/AInterview/backend/backend.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/root/Stuff/AInterview/backend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\elvin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -79,7 +79,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -31,3 +31,16 @@
 /root/Stuff/AInterview/backend/obj/Debug/net8.0/backend.csproj.Up2Date
 /root/Stuff/AInterview/backend/bin/Debug/net8.0/DotNetEnv.dll
 /root/Stuff/AInterview/backend/bin/Debug/net8.0/Sprache.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/AWSSDK.Core.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/AWSSDK.SecurityToken.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/DnsClient.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/MongoDB.Bson.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/MongoDB.Driver.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/MongoDB.Driver.Core.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/MongoDB.Libmongocrypt.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/SharpCompress.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/Snappier.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/ZstdSharp.dll
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/runtimes/linux/native/libmongocrypt.so
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/runtimes/osx/native/libmongocrypt.dylib
+/root/Stuff/AInterview/backend/bin/Debug/net8.0/runtimes/win/native/mongocrypt.dll

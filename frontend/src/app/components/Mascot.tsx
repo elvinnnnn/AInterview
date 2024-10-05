@@ -6,7 +6,6 @@ interface MascotProps {
 }
 
 export default function Mascot({ loading, session }: MascotProps) {
-  console.log(loading);
   return !loading ? (
     <>
       {!session ? (

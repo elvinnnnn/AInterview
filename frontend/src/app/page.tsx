@@ -7,6 +7,7 @@ import Topbar from "./components/Topbar";
 export default function Home() {
   const [textInput, setTextInput] = useState<string>("");
   const [botResponse, setBotResponse] = useState<string>("");
+  const [dbId, setDbId] = useState<string>("");
 
   const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTextInput(e.target.value);
@@ -16,11 +17,15 @@ export default function Home() {
   // Need to think about whether to store an object that has questions+responses together on the frontend or backend. (probably backend)
   const handleSendChat = async () => {
     try {
-      const res = await axios.put("http://localhost:5000/answer", textInput, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await axios.put(
+        "http://localhost:5000/answer",
+        { answer: textInput, id: dbId },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(res);
       setBotResponse(res.data);
       if (textInput != "") {
@@ -38,7 +43,7 @@ export default function Home() {
       </div>
       <div className="grid grid-rows-6 w-11/12 sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-1/2">
         <div className="relative flex items-end">
-          <Topbar setBotResponse={setBotResponse} />
+          <Topbar setBotResponse={setBotResponse} setDbId={setDbId} />
         </div>
         <div id="chat-box" className="relative flex row-span-4 mx-2 md:mx-16">
           <button className="absolute right-0">
