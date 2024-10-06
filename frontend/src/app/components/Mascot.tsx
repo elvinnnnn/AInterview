@@ -1,43 +1,70 @@
 import React from "react";
 
+const MascotFace = ({ face }: { face: string }) => (
+  <div
+    className={
+      "mascot uninteractable animate-jump preserve-whitespace text-5xl text-black dark:text-white absolute"
+    }
+  >
+    {"  "}
+    {face}
+  </div>
+);
+
+const MascotSides = () => (
+  <div
+    className={
+      "mascot uninteractable animate-jump-delayed preserve-whitespace text-5xl text-black dark:text-white absolute"
+    }
+  >
+    {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
+  </div>
+);
+
+const MascotThinkingFace = () => (
+  <div
+    className={
+      "mascot uninteractable animate-jump preserve-whitespace text-5xl text-black dark:text-white absolute"
+    }
+  >
+    {"  "}
+    {"= w="} {"o"}
+  </div>
+);
+
 interface MascotProps {
   loading: boolean;
   session: boolean;
   listening: boolean;
+  frontpage: boolean;
 }
 
-export default function Mascot({ loading, session, listening }: MascotProps) {
+const Mascot = ({ loading, session, listening, frontpage }: MascotProps) => {
+  if (frontpage) {
+    return (
+      <>
+        <MascotFace face=".  ^-^  .  " />
+        <MascotSides />
+      </>
+    );
+  }
   return !loading ? (
     <>
       {!session ? (
-        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
-          {"  "}
-          {"^ -^"}
-        </div>
+        <MascotFace face="^ .^" />
       ) : !listening ? (
-        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
-          {"  "}
-          {"^ 0^"} {"/"}
-        </div>
+        <MascotFace face="^ 0^ /" />
       ) : (
-        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
-          {"  "}
-          {"^ -^"}
-        </div>
+        <MascotFace face="^ -^" />
       )}
-      <div className="mascot uninteractable absolute animate-jump-delayed preserve-whitespace text-5xl">
-        {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
-      </div>
+      <MascotSides />
     </>
   ) : (
     <>
-      <div className="mascot thinking uninteractable absolute animate-jump preserve-whitespace text-5xl">
-        {"  "}
-        {"= w="} {"o"}
-      </div>
-      <div className="mascot uninteractable absolute animate-jump-delayed preserve-whitespace text-5xl">
-        {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
-      </div>
+      <MascotThinkingFace />
+      <MascotSides />
     </>
   );
-}
+};
+
+export default Mascot;
