@@ -48,12 +48,12 @@
 }
 
 #chat-box {
-  background: rgb(82, 55, 180);
+  background: rgb(17, 16, 18);
   background: linear-gradient(
     347deg,
-    rgba(82, 55, 180, 1) 0%,
-    rgba(88, 76, 215, 1) 31%,
-    rgba(69, 67, 245, 1) 100%
+    rgba(17, 16, 18, 1) 0%,
+    rgba(39, 39, 45, 1) 48%,
+    rgba(49, 49, 55, 1) 100%
   );
   border-color: white;
   border-width: 2px;

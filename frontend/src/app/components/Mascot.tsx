@@ -3,9 +3,10 @@ import React from "react";
 interface MascotProps {
   loading: boolean;
   session: boolean;
+  listening: boolean;
 }
 
-export default function Mascot({ loading, session }: MascotProps) {
+export default function Mascot({ loading, session, listening }: MascotProps) {
   return !loading ? (
     <>
       {!session ? (
@@ -13,10 +14,15 @@ export default function Mascot({ loading, session }: MascotProps) {
           {"  "}
           {"^ -^"}
         </div>
-      ) : (
+      ) : !listening ? (
         <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
           {"  "}
           {"^ 0^"} {"/"}
+        </div>
+      ) : (
+        <div className="mascot uninteractable absolute animate-jump preserve-whitespace text-5xl">
+          {"  "}
+          {"^ -^"}
         </div>
       )}
       <div className="mascot uninteractable absolute animate-jump-delayed preserve-whitespace text-5xl">

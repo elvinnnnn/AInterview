@@ -3,13 +3,16 @@ import React, { useState } from "react";
 import Mascot from "./Mascot";
 import axios from "axios";
 
+interface TopbarProps {
+  setBotResponse: React.Dispatch<React.SetStateAction<string>>;
+  setDbId: React.Dispatch<React.SetStateAction<string>>;
+  isListening: boolean;
+}
 export default function Topbar({
   setBotResponse,
   setDbId,
-}: {
-  setBotResponse: React.Dispatch<React.SetStateAction<string>>;
-  setDbId: React.Dispatch<React.SetStateAction<string>>;
-}) {
+  isListening,
+}: TopbarProps) {
   const [description, setDescription] = useState<string>("");
   const handleDescriptionChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setDescription(e.target.value);
@@ -60,13 +63,21 @@ export default function Topbar({
     <>
       {isLoading ? (
         <>
-          <Mascot loading={isLoading} session={inSession} />
+          <Mascot
+            loading={isLoading}
+            session={inSession}
+            listening={isListening}
+          />
           <div className="w-1/2" />
           <div className="w-1/2" />
         </>
       ) : (
         <>
-          <Mascot loading={isLoading} session={inSession} />
+          <Mascot
+            loading={isLoading}
+            session={inSession}
+            listening={isListening}
+          />
           <div className="w-1/2" />
           {inSession ? (
             <button

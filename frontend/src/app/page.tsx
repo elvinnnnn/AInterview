@@ -4,33 +4,39 @@ import axios from "axios";
 import Image from "next/image";
 import Topbar from "./components/Topbar";
 
+const BACKEND_ADDR = process.env.NEXT_PUBLIC_BACKEND_ADDR;
+
 export default function Home() {
-  const [textInput, setTextInput] = useState<string>("");
+  const [userInput, setUserInput] = useState<string>("");
   const [botResponse, setBotResponse] = useState<string>("");
   const [dbId, setDbId] = useState<string>("");
+  const [isListening, setIsListening] = useState<boolean>(false);
 
-  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTextInput(e.target.value);
+  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserInput(e.target.value);
   };
 
   // Implementation for storing these sent chats not complete! Currently just moves on to the next question.
   // Need to think about whether to store an object that has questions+responses together on the frontend or backend. (probably backend)
   const handleSendChat = async () => {
     try {
+      setIsListening(true);
       const res = await axios.put(
-        "http://localhost:5000/answer",
-        { answer: textInput, id: dbId },
+        BACKEND_ADDR + "answer",
+        { answer: userInput, id: dbId },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
-      console.log(res);
-      setBotResponse(res.data);
-      if (textInput != "") {
-        setTextInput("");
-      }
+      setUserInput("");
+      setBotResponse("");
+      setTimeout(() => {
+        console.log(res);
+        setBotResponse(res.data);
+        setIsListening(false);
+      }, 1500);
     } catch (error) {
       console.error(error);
     }
@@ -43,7 +49,11 @@ export default function Home() {
       </div>
       <div className="grid grid-rows-6 w-11/12 sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-1/2">
         <div className="relative flex items-end">
-          <Topbar setBotResponse={setBotResponse} setDbId={setDbId} />
+          <Topbar
+            setBotResponse={setBotResponse}
+            setDbId={setDbId}
+            isListening={isListening}
+          />
         </div>
         <div id="chat-box" className="relative flex row-span-4 mx-2 md:mx-16">
           <button className="absolute right-0">
@@ -60,32 +70,31 @@ export default function Home() {
               <div id="bot-textbox-arrow" className="ml-26 md:ml-12"></div>
               <div
                 id="bot-textbox"
-                className="flex absolute top-0 left-0 items-center justify-center p-5 m-3 uninteractable shadow-lg"
+                className="flex absolute top-0 left-0 items-center justify-center p-5 m-3 mr-10 uninteractable shadow-lg"
               >
                 {botResponse}
               </div>
             </div>
           ) : null}
-          {textInput != "" ? (
+          {userInput != "" ? (
             <div>
               <div
                 id="user-textbox-arrow"
                 className=" absolute bottom-0 right-0 mb-6"
               ></div>
-              {/* need div to expand vertically up the chatbox by 1em if it reaches the end*/}
               <div
                 id="user-textbox"
                 className="flex absolute bottom-0 right-0 items-center justify-center p-5 m-3 uninteractable shadow-lg"
               >
-                {textInput}
+                {userInput}
               </div>
             </div>
           ) : null}
         </div>
         <div id="chat-input" className="flex items-start mx-20 p-2">
           <input
-            value={textInput}
-            onChange={handleTextInputChange}
+            value={userInput}
+            onChange={handleUserInputChange}
             type="text"
             placeholder="Your response..."
             className="uninteractable w-5/6 rounded-lg mr-1 py-1 px-2"
