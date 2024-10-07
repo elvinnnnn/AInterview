@@ -21,9 +21,9 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={isDark ? "dark dark:bg-black" : "bg-black"}>
+      <body className={isDark ? "dark bg-black" : "bg-white"}>
         <button
-          className="fixed top-0 right-0"
+          className="fixed top-0 right-0 dark:text-white text-black"
           onClick={() => {
             setIsDark(!isDark);
           }}

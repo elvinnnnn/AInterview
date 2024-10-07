@@ -48,6 +48,7 @@
 }
 
 #chat-box {
+  z-index: 2;
   background: rgb(17, 16, 18);
   background: linear-gradient(
     347deg,
@@ -84,6 +85,17 @@
   animation: cog-turn 0.2s linear forwards;
 }
 
+#chat-input {
+  transform: translateY(-50px);
+  opacity: 0;
+  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+#chat-input.slide-down {
+  transform: translateY(0);
+  opacity: 1;
+}
+
 @keyframes jump {
   0% {
     padding-bottom: 2px;
@@ -99,15 +111,6 @@
   }
   100% {
     transform: rotate(30deg);
-  }
-}
-
-@keyframes expand {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
   }
 }
 
@@ -134,7 +137,6 @@
 }
 
 .mascot {
-  color: white;
   pointer-events: none;
 }
 
