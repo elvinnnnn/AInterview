@@ -4,12 +4,12 @@ import Mascot from "./Mascot";
 import axios from "axios";
 
 interface TopbarProps {
-  setBotResponse: React.Dispatch<React.SetStateAction<string>>;
+  setBotText: React.Dispatch<React.SetStateAction<string>>;
   setDbId: React.Dispatch<React.SetStateAction<string>>;
   isListening: boolean;
 }
 export default function Topbar({
-  setBotResponse,
+  setBotText,
   setDbId,
   isListening,
 }: TopbarProps) {
@@ -33,7 +33,7 @@ export default function Topbar({
         }
       );
       console.log(res.data);
-      setBotResponse(res.data.greeting);
+      setBotText(res.data.greeting);
       setDbId(res.data.id);
       setIsLoading(false);
       setInSession(true);
@@ -60,13 +60,14 @@ export default function Topbar({
   };
 
   return (
-    <>
+    <div className="relative flex items-end">
       {isLoading ? (
         <>
           <Mascot
             loading={isLoading}
             session={inSession}
             listening={isListening}
+            frontpage={false}
           />
           <div className="w-1/2" />
           <div className="w-1/2" />
@@ -77,6 +78,7 @@ export default function Topbar({
             loading={isLoading}
             session={inSession}
             listening={isListening}
+            frontpage={false}
           />
           <div className="w-1/2" />
           {inSession ? (
@@ -99,6 +101,6 @@ export default function Topbar({
           )}
         </>
       )}
-    </>
+    </div>
   );
 }

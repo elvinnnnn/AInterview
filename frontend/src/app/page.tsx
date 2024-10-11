@@ -1,58 +1,64 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Image from "next/image";
-import Topbar from "./components/Topbar";
+import { Topbar, Textbox, ChatInput } from "./components";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const BACKEND_ADDR = process.env.NEXT_PUBLIC_BACKEND_ADDR;
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
+const HEADERS = {
+  "Content-Type": "application/json",
+};
+
+interface AnswerData {
+  text: string;
+  finished: boolean;
+}
 
 export default function Home() {
-  const [userInput, setUserInput] = useState<string>("");
-  const [botResponse, setBotResponse] = useState<string>("");
+  const router = useRouter();
+  const [userText, setUserText] = useState<string>("");
+  const [botText, setBotText] = useState<string>("");
   const [dbId, setDbId] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
+  useEffect(() => {
+    // Check if user is already logged in
+    if (!localStorage.getItem("token")) {
+      router.push("/login");
+    }
+    // If so, redirect to home page
+  }, []);
 
-  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUserInput(e.target.value);
+  const logout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
   };
 
-  // Implementation for storing these sent chats not complete! Currently just moves on to the next question.
-  // Need to think about whether to store an object that has questions+responses together on the frontend or backend. (probably backend)
   const handleSendChat = async () => {
     try {
       setIsListening(true);
-      const res = await axios.put(
-        BACKEND_ADDR + "answer",
-        { answer: userInput, id: dbId },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const response = await axios.put(
+        `${BACKEND}/answer`,
+        { answer: userText, id: dbId },
+        { headers: HEADERS }
       );
-      setUserInput("");
-      setBotResponse("");
-      setTimeout(() => {
-        console.log(res);
-        handleSetBotResponse(res.data.text);
-        if (res.data.finished) {
-          setIsFeedback(true);
-        }
-        setIsListening(false); // This is for mascot animations.
-      }, 1000);
+      const data = response.data;
+      setUserText("");
+      setBotText("");
+      delayedBotText(data);
     } catch (error) {
-      console.error(error);
+      console.error("Error sending answer:", error);
     }
   };
 
-  const handleSetBotResponse = (text: string) => {
-    setBotResponse(text.charAt(0));
+  const handleSetBotText = (text: string) => {
+    setBotText(text.charAt(0)); // To handle some unexpected behaviour. This is a workaround.
     let i = 0;
     const typeWriter = () => {
       if (i < text.length) {
-        setBotResponse((prev) => prev + text.charAt(i));
+        setBotText((prev) => prev + text.charAt(i));
         i++;
         setTimeout(typeWriter, 10);
       }
@@ -60,25 +66,38 @@ export default function Home() {
     typeWriter();
   };
 
+  // UNDER CONSTRUCTION ***
   const getFeedback = async () => {
     try {
-      const res = await axios.post(BACKEND_ADDR + "feedback", dbId, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await axios.post(`${BACKEND}/feedback`, dbId, {
+        headers: HEADERS,
       });
       setIsFeedback(false);
-      console.log(res.data);
+      console.log(response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Error getting feedback:", error);
     }
   };
 
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSendChat();
-      setUserInput("");
+      setUserText("");
     }
+  };
+
+  const delayedBotText = (data: AnswerData) => {
+    setTimeout(() => {
+      handleSetBotText(data.text);
+      if (data.finished) {
+        setIsFeedback(true);
+      }
+      setIsListening(false); // This is for mascot animations.
+    }, 1000);
+  };
+
+  const handleSetUserText = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserText(event.target.value);
   };
 
   return (
@@ -87,51 +106,39 @@ export default function Home() {
         href="/login"
         id="title"
         className="fixed top-0 left-0 text-4xl font-bold"
+        role="title"
       >
         AInterview
       </Link>
+      <button
+        onClick={logout}
+        className="fixed top-0 right-0 text-2xl font-bold text-black dark:text-white"
+      >
+        Logout
+      </button>
       <div className="grid grid-rows-6 w-11/12 sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-1/2">
-        <div className="relative flex items-end">
-          <Topbar
-            setBotResponse={setBotResponse}
-            setDbId={setDbId}
-            isListening={isListening}
-          />
-        </div>
+        <Topbar
+          setBotText={setBotText}
+          setDbId={setDbId}
+          isListening={isListening}
+        />
         <div id="chat-box" className="relative flex row-span-4 mx-2 md:mx-16">
           <button className="absolute right-0">
-            <Image
-              id="cog"
-              src="/cog.png"
-              alt="cog"
-              width={30}
-              height={30}
-            ></Image>
+            <Image id="cog" src="/cog.png" alt="cog" width={30} height={30} />
           </button>
-          {botResponse != "" ? (
-            <div>
-              <div id="bot-textbox-arrow" className="ml-26 md:ml-12"></div>
-              <div
-                id="bot-textbox"
-                className="flex absolute top-0 left-0 items-center justify-center p-5 m-3 mr-10 uninteractable shadow-lg"
-              >
-                {botResponse}
-              </div>
-            </div>
+          {botText != "" ? (
+            <Textbox
+              isUser={false}
+              css="top-0 left-0 p-5 m-3 mr-10"
+              input={botText}
+            />
           ) : null}
-          {userInput != "" ? (
-            <div>
-              <div
-                id="user-textbox-arrow"
-                className=" absolute bottom-0 right-0 mb-6"
-              ></div>
-              <div
-                id="user-textbox"
-                className="flex absolute bottom-0 right-0 items-center justify-center p-5 m-3 uninteractable shadow-lg"
-              >
-                {userInput}
-              </div>
-            </div>
+          {userText != "" ? (
+            <Textbox
+              isUser={true}
+              css="bottom-0 right-0 p-5 m-3"
+              input={userText}
+            />
           ) : null}
         </div>
         {isFeedback ? (
@@ -140,31 +147,17 @@ export default function Home() {
               className="button rounded-lg ml-1 py-1 hover:bg-gray-200 text-gray-500"
               onClick={getFeedback}
             >
-              {"Get Feedback!"}
+              Get Feedback!
             </button>
           </div>
         ) : (
-          <div
-            id="chat-input"
-            className={`flex items-start mx-20 p-2 ${
-              botResponse ? "slide-down" : ""
-            }`}
-          >
-            <input
-              value={userInput}
-              onChange={handleUserInputChange}
-              onKeyUp={handleEnter}
-              type="text"
-              placeholder="Your response..."
-              className="uninteractable w-5/6 rounded-lg mr-1 py-1 px-2"
-            />
-            <button
-              className="button w-1/6 rounded-lg ml-1 py-1 hover:bg-gray-200 text-gray-500"
-              onClick={handleSendChat}
-            >
-              {">>>"}
-            </button>
-          </div>
+          <ChatInput
+            botText={botText}
+            userText={userText}
+            setUserText={handleSetUserText}
+            handleEnter={handleEnter}
+            handleSendChat={handleSendChat}
+          />
         )}
       </div>
     </div>

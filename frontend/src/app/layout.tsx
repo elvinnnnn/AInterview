@@ -23,7 +23,7 @@ export default function RootLayout({
       </head>
       <body className={isDark ? "dark bg-black" : "bg-white"}>
         <button
-          className="fixed top-0 right-0 dark:text-white text-black"
+          className="fixed bottom-0 right-0 dark:text-white text-black"
           onClick={() => {
             setIsDark(!isDark);
           }}

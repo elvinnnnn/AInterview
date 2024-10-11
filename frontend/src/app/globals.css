@@ -96,6 +96,28 @@
   opacity: 1;
 }
 
+.thinking::after {
+  content: "";
+  animation: thinking 1.5s steps(4, end) infinite;
+}
+
+.mascot {
+  pointer-events: none;
+}
+
+.animate-jump {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+}
+
+.animate-jump-delayed {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+  animation-delay: 400ms;
+}
+
 @keyframes jump {
   0% {
     padding-bottom: 2px;
@@ -129,26 +151,4 @@
   100% {
     content: "";
   }
-}
-
-.thinking::after {
-  content: "";
-  animation: thinking 1.5s steps(4, end) infinite;
-}
-
-.mascot {
-  pointer-events: none;
-}
-
-.animate-jump {
-  animation: jump 1s infinite;
-  animation-timing-function: linear;
-  animation-direction: alternate;
-}
-
-.animate-jump-delayed {
-  animation: jump 1s infinite;
-  animation-timing-function: linear;
-  animation-direction: alternate;
-  animation-delay: 400ms;
 }

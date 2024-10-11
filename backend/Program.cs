@@ -9,8 +9,16 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using backend;
+using Microsoft.AspNetCore.Identity;
+using backend.Data;
 
-ChatClient client = new(model: "gpt-4o-mini", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+DotNetEnv.Env.Load();
+var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
+if (string.IsNullOrEmpty(apiKey)) {
+    Console.WriteLine("Error: OPENAI_API_KEY environment variable is not set.");
+    return;
+}
+ChatClient client = new(model: "gpt-4o-mini", apiKey: apiKey);
 
 var connectionString = Environment.GetEnvironmentVariable("MONGODB_URI");
 
@@ -21,6 +29,8 @@ var db = new MongoClient(connectionString);
 var collection = db.GetDatabase("ainterview").GetCollection<BsonDocument>("dialogues");
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<MongoDbService>();
 
 builder.Services.AddCors(options => {
     options.AddPolicy("ainterview", policyBuilder => {
@@ -33,8 +43,6 @@ builder.Services.AddCors(options => {
 var app = builder.Build();
 
 app.UseCors("ainterview");
-
-DotNetEnv.Env.Load();
 
 // The system message provides the AI initial context and instructions to more accuretely complete the schema
 var messages = new List<ChatMessage>{
@@ -144,6 +152,10 @@ string ReviewToDB(Review review) {
     collection.InsertOne(reviewDocument);
     return reviewDocument["_id"]?.ToString() ?? "";
 }
+
+
+app.MapPost("/login", ([FromBody] LoginRequest login) => {return login.username + login.password;});
+
 
 app.MapPost("/dialogues", async ([FromBody] string description) => {
     messages.Add(new UserChatMessage(description));
@@ -300,4 +312,14 @@ public class AnswerRequest
 {
     public required string answer { get; set; }
     public required string id { get; set; }
+}
+
+public class LoginRequest
+{
+    public required string username { get; set; }
+    public required string password { get; set; }
+}
+
+public class User: IdentityUser {
+
 }
