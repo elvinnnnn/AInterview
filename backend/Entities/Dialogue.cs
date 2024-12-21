@@ -15,7 +15,7 @@ namespace backend
         public required string UserId { get; set; }
         public required int CurrentQuestionIndex { get; set; }
         public required string Greeting { get; set; }
-        public required Dictionary<int, QnA> Questions { get; set; }
+        public required Dictionary<string, QnA> Questions { get; set; }
         public required string Farewell { get; set; }
         public class QnA
         {

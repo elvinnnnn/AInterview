@@ -18,7 +18,7 @@ export default function ChatInput({
   return (
     <div
       id="chat-input"
-      className={`flex items-start mx-20 p-2 ${botText ? "slide-down" : ""}`}
+      className={`mx-20 flex items-start p-2 ${botText ? "slide-down" : ""}`}
     >
       <input
         value={userText}
@@ -26,10 +26,10 @@ export default function ChatInput({
         onKeyUp={handleEnter}
         type="text"
         placeholder="Your response..."
-        className="uninteractable w-5/6 rounded-lg mr-1 py-1 px-2"
+        className="uninteractable mr-1 w-5/6 rounded-lg px-2 py-1"
       />
       <button
-        className="button rounded-lg ml-1 py-1 hover:bg-gray-200 text-gray-500 w-1/6"
+        className="button ml-1 w-1/6 rounded-lg py-1 text-gray-500 hover:bg-gray-200"
         onClick={handleSendChat}
       >
         {">>>"}

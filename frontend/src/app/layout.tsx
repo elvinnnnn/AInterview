@@ -1,7 +1,7 @@
 "use client";
 import "./globals.css";
 import { Fira_Code } from "next/font/google";
-import React, { useState } from "react";
+import React from "react";
 
 const fira = Fira_Code({
   weight: "400",
@@ -14,24 +14,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const [isDark, setIsDark] = useState<boolean>(false);
-
   return (
     <html lang="en" className={fira.className}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
-      <body className={isDark ? "dark bg-black" : "bg-white"}>
-        <button
-          className="fixed bottom-0 right-0 dark:text-white text-black"
-          onClick={() => {
-            setIsDark(!isDark);
-          }}
-        >
-          Dark/Light
-        </button>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -15,7 +15,7 @@ export default function Textbox({
       />
       <div
         id={isUser ? "user-textbox" : "bot-textbox"}
-        className={`flex absolute items-center justify-center uninteractable shadow-lg ${css}`}
+        className={`uninteractable absolute flex items-center justify-center shadow-lg ${css}`}
       >
         {input}
       </div>

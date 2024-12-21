@@ -1,17 +1,13 @@
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
 
 namespace backend.Entities
 {
     public class User
     {
         [BsonId]
-        [BsonElement("_id"), BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
-        public string? Id { get; set; }
-        
-        [BsonElement("username"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        public string? Username { get; set; }
-        
-        [BsonElement("password"), BsonRepresentation(MongoDB.Bson.BsonType.String)]
-        public string? Password { get; set; }
+        public ObjectId Id { get; set; } // optional to let mongodb generate the id
+        public required string Username { get; set; }
+        public required string Password { get; set; }
     }
 }

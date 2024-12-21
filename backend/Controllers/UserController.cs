@@ -15,23 +15,23 @@ namespace backend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<User?>> GetById(string id)
+        public async Task<ActionResult<User>> GetById(string id)
         {
             var filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            var user = _users.Find(filter).FirstOrDefault();
+            var user = await _users.Find(filter).FirstOrDefaultAsync();
             return user is not null ? Ok(user) : NotFound();
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(User user) {
-            await _users.InsertOneAsync(user);
+            await _users!.InsertOneAsync(user);
             return CreatedAtAction(nameof(GetById), new { id = user.Id}, user);
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(string id) {
             var filter = Builders<User>.Filter.Eq(x => x.Id, id);
-            await _users.DeleteOneAsync(filter);
+            await _users!.DeleteOneAsync(filter);
             return Ok();
         }
     }

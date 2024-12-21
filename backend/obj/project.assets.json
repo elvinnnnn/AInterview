@@ -6560,19 +6560,19 @@
     ]
   },
   "packageFolders": {
-    "/root/.nuget/packages/": {}
+    "C:\\Users\\elvin\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/root/Stuff/AInterview/backend/backend.csproj",
+      "projectUniqueName": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
       "projectName": "backend",
-      "projectPath": "/root/Stuff/AInterview/backend/backend.csproj",
-      "packagesPath": "/root/.nuget/packages/",
-      "outputPath": "/root/Stuff/AInterview/backend/obj/",
+      "projectPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\backend.csproj",
+      "packagesPath": "C:\\Users\\elvin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\elvin\\Documents\\GitHub\\AInterview\\backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/root/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\elvin\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -6645,7 +6645,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

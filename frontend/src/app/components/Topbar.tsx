@@ -2,6 +2,10 @@
 import React, { useState } from "react";
 import Mascot from "./Mascot";
 import axios from "axios";
+const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
+const HEADERS = {
+  "Content-Type": "application/json",
+};
 
 interface TopbarProps {
   setBotText: React.Dispatch<React.SetStateAction<string>>;
@@ -23,15 +27,9 @@ export default function Topbar({
   const handleSendDescription = async () => {
     // Send description to backend OpenAI API
     try {
-      const res = await axios.post(
-        "http://localhost:5000/dialogues",
-        description,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const res = await axios.post(`${BACKEND}/api/dialogue`, description, {
+        headers: HEADERS,
+      });
       console.log(res.data);
       setBotText(res.data.greeting);
       setDbId(res.data.id);
@@ -83,7 +81,7 @@ export default function Topbar({
           <div className="w-1/2" />
           {inSession ? (
             <button
-              className="button w-1/2 rounded-lg ml-40 mr-5 md:mx-20 my-2 py-1 px-2 hover:bg-gray-200 text-gray-500"
+              className="button my-2 ml-40 mr-5 w-1/2 rounded-lg px-2 py-1 text-gray-500 hover:bg-gray-200 md:mx-20"
               onClick={reset}
             >
               Try another interview?
@@ -96,7 +94,7 @@ export default function Topbar({
               onKeyUp={handleEnter}
               type="text"
               placeholder="Job description..."
-              className="uninteractable w-1/2 ml-20 mr-5 md:mx-20 my-2 py-1 px-2 rounded-lg"
+              className="uninteractable my-2 ml-20 mr-5 w-1/2 rounded-lg px-2 py-1 md:mx-20"
             />
           )}
         </>

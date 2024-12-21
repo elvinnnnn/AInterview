@@ -3,7 +3,7 @@ import React from "react";
 const MascotFace = ({ face }: { face: string }) => (
   <div
     className={
-      "mascot uninteractable animate-jump preserve-whitespace text-5xl text-black dark:text-white absolute"
+      "mascot uninteractable animate-jump preserve-whitespace absolute text-5xl text-white"
     }
   >
     {"  "}
@@ -14,7 +14,7 @@ const MascotFace = ({ face }: { face: string }) => (
 const MascotSides = () => (
   <div
     className={
-      "mascot uninteractable animate-jump-delayed preserve-whitespace text-5xl text-black dark:text-white absolute"
+      "mascot uninteractable animate-jump-delayed preserve-whitespace absolute text-5xl text-white"
     }
   >
     {"("}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{")"}
@@ -24,7 +24,7 @@ const MascotSides = () => (
 const MascotThinkingFace = () => (
   <div
     className={
-      "mascot uninteractable animate-jump preserve-whitespace text-5xl text-black dark:text-white absolute"
+      "mascot uninteractable animate-jump preserve-whitespace absolute text-5xl text-white"
     }
   >
     {"  "}
