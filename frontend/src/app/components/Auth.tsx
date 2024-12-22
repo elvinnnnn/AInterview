@@ -8,27 +8,48 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-export default function Login() {
+interface AuthProps {
+  setMessage: (message: string) => void;
+}
+
+export default function Auth({ setMessage }: AuthProps) {
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
   const handleLogin = async () => {
-    console.log(BACKEND);
     try {
       const response = await axios.post(
-        `${BACKEND}/api/user`,
+        `${BACKEND}/api/user/login`,
         { username: username, password: password },
         { headers: HEADERS },
       );
-      console.log(response.data);
-      localStorage.setItem("token", response.data);
-      // res should return {userId: string, token: string}
-      // If username and password are found in db, then let them in
-      // If not match, tell them, and give them an option to register with those credentials instead
-      router.push("/interview");
+      console.log(response);
+      setMessage("Login successful.");
+      localStorage.setItem("id", response.data.userId);
+      setTimeout(() => router.push("/interview"), 1000);
     } catch (error) {
-      console.error(error);
+      console.log(error);
+      setMessage("Login failed.");
+      setTimeout(() => setMessage(""), 2000);
+    }
+  };
+
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post(
+        `${BACKEND}/api/user/register`,
+        { username: username, password: password },
+        { headers: HEADERS },
+      );
+      console.log(response);
+      setMessage("Registration successful.");
+      localStorage.setItem("id", response.data.userId);
+      setTimeout(() => router.push("/interview"), 1000);
+    } catch (error) {
+      console.log(error);
+      setMessage("Registration failed.");
+      setTimeout(() => setMessage(""), 2000);
     }
   };
 
@@ -39,6 +60,7 @@ export default function Login() {
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
+
   return (
     <>
       <div className="relative justify-self-stretch">
@@ -59,12 +81,18 @@ export default function Login() {
           placeholder="Password"
         />
       </div>
-      <div>
+      <div className="flex">
         <button
           onClick={handleLogin}
           className="block w-full rounded-full bg-black p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
         >
           Login
+        </button>
+        <button
+          onClick={handleRegister}
+          className="block w-full rounded-full bg-black p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+        >
+          Register
         </button>
       </div>
     </>
