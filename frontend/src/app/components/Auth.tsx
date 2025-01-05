@@ -17,39 +17,20 @@ export default function Auth({ setMessage }: AuthProps) {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleLogin = async () => {
+  const handleAuth = async (endpoint: string) => {
     try {
       const response = await axios.post(
-        `${BACKEND}/api/user/login`,
+        `${BACKEND}/api/user/${endpoint}`,
         { username: username, password: password },
         { headers: HEADERS },
       );
-      console.log(response);
-      setMessage("Login successful.");
-      localStorage.setItem("id", response.data.userId);
-      setTimeout(() => router.push("/interview"), 1000);
+      setMessage(response.data.message);
+      setTimeout(() => router.push("/interview"), 1000); // if status OK, do this
     } catch (error) {
-      console.log(error);
-      setMessage("Login failed.");
-      setTimeout(() => setMessage(""), 2000);
-    }
-  };
-
-  const handleRegister = async () => {
-    try {
-      const response = await axios.post(
-        `${BACKEND}/api/user/register`,
-        { username: username, password: password },
-        { headers: HEADERS },
-      );
-      console.log(response);
-      setMessage("Registration successful.");
-      localStorage.setItem("id", response.data.userId);
-      setTimeout(() => router.push("/interview"), 1000);
-    } catch (error) {
-      console.log(error);
-      setMessage("Registration failed.");
-      setTimeout(() => setMessage(""), 2000);
+      if (axios.isAxiosError(error) && error.response?.status === 400) {
+        setMessage(error.response.data.message);
+      }
+      setTimeout(() => setMessage(""), 2000); // if status 400, do this
     }
   };
 
@@ -60,6 +41,9 @@ export default function Auth({ setMessage }: AuthProps) {
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
   };
+
+  const handleLogin = () => handleAuth("login");
+  const handleRegister = () => handleAuth("register");
 
   return (
     <>
