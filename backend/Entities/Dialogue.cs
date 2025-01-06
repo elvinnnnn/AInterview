@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
@@ -15,7 +11,7 @@ namespace backend
         public required string UserId { get; set; }
         public required int CurrentQuestionIndex { get; set; }
         public required string Greeting { get; set; }
-        public required Dictionary<int, QnA> Questions { get; set; }
+        public required Dictionary<string, QnA> Questions { get; set; }
         public required string Farewell { get; set; }
         public class QnA
         {

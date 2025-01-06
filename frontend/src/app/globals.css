@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  background-color: #141619;
+}
 .preserve-whitespace {
   white-space: pre; /* or use 'pre' if you want to preserve only spaces and newlines */
 }
@@ -62,18 +65,18 @@
 }
 
 .uninteractable {
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #title {
   color: white;
   padding: 10px;
   padding-left: 15px;
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #cog {
@@ -88,12 +91,36 @@
 #chat-input {
   transform: translateY(-50px);
   opacity: 0;
-  transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+  transition:
+    transform 0.5s ease-out,
+    opacity 0.5s ease-out;
 }
 
 #chat-input.slide-down {
   transform: translateY(0);
   opacity: 1;
+}
+
+.thinking::after {
+  content: "";
+  animation: thinking 1.5s steps(4, end) infinite;
+}
+
+.mascot {
+  pointer-events: none;
+}
+
+.animate-jump {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+}
+
+.animate-jump-delayed {
+  animation: jump 1s infinite;
+  animation-timing-function: linear;
+  animation-direction: alternate;
+  animation-delay: 400ms;
 }
 
 @keyframes jump {
@@ -131,24 +158,16 @@
   }
 }
 
-.thinking::after {
-  content: "";
-  animation: thinking 1.5s steps(4, end) infinite;
+.welcome,
+.interview {
+  animation: fade-in 2s;
 }
 
-.mascot {
-  pointer-events: none;
-}
-
-.animate-jump {
-  animation: jump 1s infinite;
-  animation-timing-function: linear;
-  animation-direction: alternate;
-}
-
-.animate-jump-delayed {
-  animation: jump 1s infinite;
-  animation-timing-function: linear;
-  animation-direction: alternate;
-  animation-delay: 400ms;
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
