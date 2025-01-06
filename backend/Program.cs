@@ -3,7 +3,6 @@ using backend.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using DotNetEnv;
 
 DotNetEnv.Env.Load();
 var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
@@ -19,28 +18,32 @@ builder.Services.AddCors(options => {
     options.AddPolicy("ainterview", policyBuilder => {
         policyBuilder.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 builder.Services.AddTransient<AuthService>();
-builder.Services.AddAuthentication(x => {
-    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(x => {
-    x.TokenValidationParameters = new TokenValidationParameters {
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
-        ValidateIssuer = false,
-        ValidateAudience = false,
-    };
-});
-builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+    });
 
 var app = builder.Build();
+
+app.Use(async (context, next) => {
+    context.Response.Headers.Append("X-Content-Type-Options", "nosniff");
+    await next();
+});
+
 app.UseCors("ainterview");
-app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 app.Run();
 
 public class AnswerRequest

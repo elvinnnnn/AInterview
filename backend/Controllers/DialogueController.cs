@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using backend.Data;
 using MongoDB.Driver;
 using MongoDB.Bson;
@@ -59,7 +58,6 @@ public class DialogueController : ControllerBase
         )
     };
     
-
     string DialogueToDB(Dialogue dialogue) {
         _dialogues?.InsertOne(dialogue);
         return dialogue.Id.ToString() ?? "";

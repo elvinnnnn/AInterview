@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 
@@ -10,12 +10,21 @@ const HEADERS = {
 
 interface AuthProps {
   setMessage: (message: string) => void;
+  loggedIn: boolean;
 }
 
-export default function Auth({ setMessage }: AuthProps) {
+export default function Auth({ setMessage, loggedIn }: AuthProps) {
   const router = useRouter();
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      setIsLoading(false);
+    }
+  }, [router]);
 
   const handleAuth = async (endpoint: string) => {
     try {
@@ -24,7 +33,9 @@ export default function Auth({ setMessage }: AuthProps) {
         { username: username, password: password },
         { headers: HEADERS },
       );
+      console.log(response.data);
       setMessage(response.data.message);
+      localStorage.setItem("token", response.data.token);
       setTimeout(() => router.push("/interview"), 1000); // if status OK, do this
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 400) {
@@ -34,18 +45,38 @@ export default function Auth({ setMessage }: AuthProps) {
     }
   };
 
-  const handleUsernameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
-
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setUsername(e.target.value);
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setPassword(e.target.value);
   const handleLogin = () => handleAuth("login");
   const handleRegister = () => handleAuth("register");
 
-  return (
+  if (loggedIn) {
+    return (
+      <div className="flex">
+        <button
+          onClick={() => {
+            router.push("/interview");
+          }}
+          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+        >
+          Interview
+        </button>
+        <button
+          onClick={() => {
+            localStorage.removeItem("token");
+            router.push("/");
+          }}
+          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
+
+  return !isLoading ? (
     <>
       <div className="relative justify-self-stretch">
         <input
@@ -68,17 +99,17 @@ export default function Auth({ setMessage }: AuthProps) {
       <div className="flex">
         <button
           onClick={handleLogin}
-          className="block w-full rounded-full bg-black p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
         >
           Login
         </button>
         <button
           onClick={handleRegister}
-          className="block w-full rounded-full bg-black p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
         >
           Register
         </button>
       </div>
     </>
-  );
+  ) : null;
 }

@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Topbar, ChatInput, Chatbox } from "../components";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
@@ -19,6 +20,17 @@ export default function Interview() {
   const [dbId, setDbId] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token === null) {
+      router.push("/welcome");
+    } else {
+      setIsLoading(false);
+    }
+  }, [router]);
 
   const handleSendChat = async () => {
     try {
@@ -75,11 +87,11 @@ export default function Interview() {
     }, 1000);
   };
 
-  const handleSetUserText = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUserText(event.target.value);
-  };
-  return (
-    <div className="flex h-screen justify-center">
+  const handleSetUserText = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setUserText(e.target.value);
+
+  return !isLoading ? (
+    <div className="interview flex h-screen justify-center">
       <Link
         href="/"
         id="title"
@@ -88,6 +100,15 @@ export default function Interview() {
       >
         AInterview
       </Link>
+      <button
+        onClick={() => {
+          localStorage.removeItem("token");
+          router.push("/welcome");
+        }}
+        className="fixed right-0 top-0 block rounded-full p-4 px-4 py-2 text-2xl font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+      >
+        Logout
+      </button>
       <div className="grid w-11/12 grid-rows-6 sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-1/2">
         <Topbar
           setBotText={setBotText}
@@ -115,5 +136,5 @@ export default function Interview() {
         )}
       </div>
     </div>
-  );
+  ) : null;
 }
