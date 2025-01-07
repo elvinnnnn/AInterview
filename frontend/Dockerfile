@@ -1,6 +1,6 @@
 FROM node:20.18-alpine
 ENV NEXT_PUBLIC_BACKEND_ADDR="http://localhost:5000"
-
+WORKDIR /app
 COPY package*.json ./
 
 RUN npm install

@@ -7,8 +7,12 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_BACKEND_ADDR=http://localhost:5000
+      - WATCHPACK_POLLING=true
     depends_on:
       - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 
   backend:
     build:
