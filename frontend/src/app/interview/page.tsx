@@ -1,9 +1,16 @@
 "use client";
-import Link from "next/link";
+
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Topbar, ChatInput, Chatbox } from "../components";
+import {
+  ChatInput,
+  Chatbox,
+  Navbar,
+  JobDesc,
+  Mascot,
+  Preferences,
+} from "../components";
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
 const HEADERS = {
   "Content-Type": "application/json",
@@ -22,7 +29,7 @@ export default function Interview() {
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-
+  const [inSession, setInSession] = useState<boolean>(false);
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token === null) {
@@ -90,51 +97,50 @@ export default function Interview() {
   const handleSetUserText = (e: React.ChangeEvent<HTMLInputElement>) =>
     setUserText(e.target.value);
 
-  return !isLoading ? (
-    <div className="interview flex h-screen justify-center">
-      <Link
-        href="/"
-        id="title"
-        className="fixed left-0 top-0 text-4xl font-bold"
-        role="title"
-      >
-        AInterview
-      </Link>
-      <button
-        onClick={() => {
-          localStorage.removeItem("token");
-          router.push("/welcome");
-        }}
-        className="fixed right-0 top-0 block rounded-full p-4 px-4 py-2 text-2xl font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
-      >
-        Logout
-      </button>
-      <div className="grid w-11/12 grid-rows-6 sm:w-10/12 lg:w-9/12 xl:w-8/12 2xl:w-1/2">
-        <Topbar
-          setBotText={setBotText}
-          setDbId={setDbId}
-          isListening={isListening}
-        />
-        <Chatbox botText={botText} userText={userText} />
-        {isFeedback ? (
-          <div className="mx-20 flex items-start p-2">
-            <button
-              className="button ml-1 rounded-lg py-1 text-gray-500 hover:bg-gray-200"
-              onClick={() => getReview(dbId)}
-            >
-              Review your Interview!
-            </button>
+  return (
+    <>
+      <Navbar />
+      <div className="my-4 flex h-[calc(100vh-96px)] flex-row space-x-4 border-2 xl:mx-24 2xl:mx-96">
+        <div className="flex h-full w-1/3 flex-col space-y-2">
+          <div className="h-full border-2">
+            <JobDesc
+              setBotText={setBotText}
+              setDbId={setDbId}
+              setIsLoading={setIsLoading}
+              setInSession={setInSession}
+              inSession={inSession}
+            />
           </div>
-        ) : (
-          <ChatInput
-            botText={botText}
-            userText={userText}
-            setUserText={handleSetUserText}
-            handleEnter={handleEnter}
-            handleSendChat={handleSendChat}
+          <Preferences></Preferences>
+        </div>
+        <div className="h-full w-2/3 items-center justify-center border-2">
+          <Mascot
+            loading={isLoading}
+            session={inSession}
+            listening={isListening}
+            frontpage={false}
           />
-        )}
+          <Chatbox botText={botText} userText={userText} />
+          {isFeedback ? (
+            <div className="mx-20 flex items-start p-2">
+              <button
+                className="button text-gray-500 hover:bg-gray-200 ml-1 rounded-lg py-1"
+                onClick={() => getReview(dbId)}
+              >
+                Review your Interview!
+              </button>
+            </div>
+          ) : (
+            <ChatInput
+              botText={botText}
+              userText={userText}
+              setUserText={handleSetUserText}
+              handleEnter={handleEnter}
+              handleSendChat={handleSendChat}
+            />
+          )}
+        </div>
       </div>
-    </div>
-  ) : null;
+    </>
+  );
 }

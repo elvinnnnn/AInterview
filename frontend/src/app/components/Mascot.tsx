@@ -1,12 +1,18 @@
 import React from "react";
 
-const MascotFace = ({ face }: { face: string }) => (
+const MascotFace = ({
+  face,
+  frontpage,
+}: {
+  face: string;
+  frontpage: boolean;
+}) => (
   <div
     className={
       "mascot animate-jump preserve-whitespace absolute text-5xl text-white"
     }
   >
-    {"  "}
+    {frontpage ? "" : "  "}
     {face}
   </div>
 );
@@ -40,20 +46,23 @@ interface MascotProps {
   message?: string;
 }
 
-const Mascot = ({
+export default function Mascot({
   loading,
   session,
   listening,
   frontpage,
   message,
-}: MascotProps) => {
+}: MascotProps) {
   if (frontpage) {
     return (
       <>
-        <MascotFace face=".  ^-^  .  " />
-        <MascotSides />
+        <div className="mascot-container mr-6 flex items-center justify-center">
+          <MascotFace face=".  ^-^  ." frontpage={frontpage} />
+          <MascotSides />
+        </div>
+        <div className="m-6"></div>
         {message && (
-          <div className="mascot-dialogue absolute mt-20 text-white">
+          <div className="mascot-dialogue text-center text-white">
             - {message} -
           </div>
         )}
@@ -61,22 +70,20 @@ const Mascot = ({
     );
   }
   return !loading ? (
-    <>
+    <div className="mascot-container">
       {!session ? (
-        <MascotFace face="^ .^" />
+        <MascotFace face="^ .^" frontpage={frontpage} />
       ) : !listening ? (
-        <MascotFace face="^ 0^ /" />
+        <MascotFace face="^ 0^ /" frontpage={frontpage} />
       ) : (
-        <MascotFace face="^ -^" />
+        <MascotFace face="^ -^" frontpage={frontpage} />
       )}
       <MascotSides />
-    </>
+    </div>
   ) : (
-    <>
+    <div className="mascot-container">
       <MascotThinkingFace />
       <MascotSides />
-    </>
+    </div>
   );
-};
-
-export default Mascot;
+}

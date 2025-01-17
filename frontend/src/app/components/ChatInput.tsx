@@ -26,7 +26,7 @@ export default function ChatInput({
         onKeyUp={handleEnter}
         type="text"
         placeholder="Your response..."
-        className="uninteractable mr-1 w-5/6 rounded-lg px-2 py-1"
+        className="uninteractable bg-lightgray mr-1 w-5/6 rounded-lg px-2 py-1"
       />
       <button
         className="button ml-1 w-1/6 rounded-lg py-1 text-gray-500 hover:bg-gray-200"

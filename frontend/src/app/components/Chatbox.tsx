@@ -8,7 +8,10 @@ interface TextboxProps {
 
 export default function Chatbox({ botText, userText }: TextboxProps) {
   return (
-    <div id="chat-box" className="relative row-span-4 mx-2 flex md:mx-16">
+    <div
+      id="chat-box"
+      className="border-lightgray bg-gray relative h-full border-4"
+    >
       <button className="absolute right-0">
         <Image id="cog" src="/cog.png" alt="cog" width={30} height={30} />
       </button>

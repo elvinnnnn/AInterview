@@ -35,7 +35,7 @@ export default function Welcome() {
       <div className="text-white">
         Mock it till you rock it – every practice makes perfect!
       </div>
-      <div className={!isLoggedIn ? "m-14" : "m-24"}></div>
+      <div className={!isLoggedIn ? "m-1" : "m-2"}></div>
       <Mascot
         loading={false}
         session={false}
