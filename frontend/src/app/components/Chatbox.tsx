@@ -1,31 +1,31 @@
-import Image from "next/image";
 import Textbox from "./Textbox";
+import { Message } from "../types";
 
-interface TextboxProps {
-  botText: string;
-  userText: string;
-}
-
-export default function Chatbox({ botText, userText }: TextboxProps) {
+export default function Chatbox({ messages }: { messages: Message[] }) {
+  // const handleSetBotText = (text: string) => {
+  //     setBotText(text.charAt(0)); // To handle some unexpected behaviour. This is a workaround.
+  //     let i = 0;
+  //     const typeWriter = () => {
+  //       if (i < text.length) {
+  //         setBotText((prev) => prev + text.charAt(i));
+  //         i++;
+  //         setTimeout(typeWriter, 10);
+  //       }
+  //     };
+  //     typeWriter();
+  //   };
   return (
-    <div id="chat-box" className="relative row-span-4 mx-2 flex md:mx-16">
-      <button className="absolute right-0">
-        <Image id="cog" src="/cog.png" alt="cog" width={30} height={30} />
-      </button>
-      {botText != "" ? (
-        <Textbox
-          isUser={false}
-          css="top-0 left-0 p-5 m-3 mr-10"
-          input={botText}
-        />
-      ) : null}
-      {userText != "" ? (
-        <Textbox
-          isUser={true}
-          css="bottom-0 right-0 p-5 m-3"
-          input={userText}
-        />
-      ) : null}
+    <div
+      id="chat-box"
+      className="relative flex h-full flex-col border-4 border-lightgray bg-gray"
+    >
+      <div className="h-[8%] w-full border-b-4 border-lightgray" />
+      <div className="flex max-h-[84%] flex-col justify-end overflow-y-auto">
+        {messages.map((message, index) => (
+          <Textbox key={index} isUser={message.isUser} input={message.text} />
+        ))}
+      </div>
+      <div className="h-[8%] w-full border-t-4 border-lightgray" />
     </div>
   );
 }
