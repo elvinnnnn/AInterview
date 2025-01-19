@@ -6,3 +6,4 @@ export { default as Chatbox } from "./Chatbox";
 export { default as Navbar } from "./Navbar";
 export { default as JobDesc } from "./JobDesc";
 export { default as Preferences } from "./Preferences";
+export { default as History } from "./History";

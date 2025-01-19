@@ -1,21 +1,26 @@
 export default function Textbox({
-  css,
   input,
   isUser,
 }: {
-  css: string;
   input: string;
   isUser: boolean;
 }) {
-  return (
-    <div className="-z-1">
+  return isUser ? (
+    <div className="-z-1 relative my-2 ml-auto flex items-center pl-20">
       <div
-        id={isUser ? "user-textbox-arrow" : "bot-textbox-arrow"}
-        className={isUser ? "absolute bottom-0 right-0 mb-6" : "ml-26 md:ml-12"}
-      />
+        id="user-textbox"
+        className="flex items-center justify-center p-5 shadow-lg"
+      >
+        {input}
+      </div>
+      <div id="user-textbox-arrow" />
+    </div>
+  ) : (
+    <div className="-z-1 relative my-2 flex items-center pr-20">
+      <div id="bot-textbox-arrow" />
       <div
-        id={isUser ? "user-textbox" : "bot-textbox"}
-        className={`uninteractable absolute flex items-center justify-center shadow-lg ${css}`}
+        id="bot-textbox"
+        className="flex items-center justify-center p-5 shadow-lg"
       >
         {input}
       </div>

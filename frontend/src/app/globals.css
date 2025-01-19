@@ -20,29 +20,27 @@
 #bot-textbox {
   background-color: #7c6fec;
   color: white;
-  border-radius: 25px;
+  border-radius: 18px;
 }
 
 #bot-textbox-arrow {
-  width: 32px;
-  height: 32px;
-  margin-top: -16px;
+  width: 17px;
+  height: 34px;
   background-color: #7c6fec;
-  clip-path: polygon(50% 50%, 0% 100%, 100% 100%);
+  clip-path: polygon(0% 50%, 100% 0%, 100% 100%);
 }
 
 #user-textbox-arrow {
-  width: 32px;
+  width: 16px;
   height: 32px;
   background-color: white;
-  margin-right: -16px;
-  clip-path: polygon(0% 0%, 50% 50%, 0% 100%);
+  clip-path: polygon(100% 50%, 0 0, 0 100%);
 }
 
 #user-textbox {
   background-color: white;
   color: #584cd7;
-  border-radius: 20px;
+  border-radius: 18px;
   display: inline-block;
   word-break: break-word;
 }
@@ -116,6 +114,10 @@
   animation-delay: 800ms;
 }
 
+.transition-height {
+  transition: height 0.3s ease;
+}
+
 @keyframes jump {
   0% {
     transform: translateY(2px);
@@ -176,4 +178,21 @@ button:hover {
   100% {
     transform: translateY(-2px);
   }
+}
+
+.jobdesc {
+  height: 50px;
+  transition: height 1s;
+}
+
+.jobdesc:hover {
+  height: 200px;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #fff;
 }

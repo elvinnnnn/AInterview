@@ -5,8 +5,9 @@ const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
 const HEADERS = {
   "Content-Type": "application/json",
 };
+import { Message } from "../types";
 interface JobDescProps {
-  setBotText: React.Dispatch<React.SetStateAction<string>>;
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
   setDbId: React.Dispatch<React.SetStateAction<string>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setInSession: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,13 +15,14 @@ interface JobDescProps {
 }
 
 export default function JobDesc({
-  setBotText,
+  setMessages,
   setDbId,
   setIsLoading,
   setInSession,
   inSession,
 }: JobDescProps) {
   const [description, setDescription] = useState<string>("");
+
   const handleDescriptionChange = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -34,7 +36,10 @@ export default function JobDesc({
         headers: HEADERS,
       });
       console.log(res.data);
-      setBotText(res.data.greeting);
+      setMessages((prev) => [
+        ...prev,
+        { isUser: false, text: res.data.greeting },
+      ]);
       setDbId(res.data.id);
       setInSession(true);
     } catch (error) {
@@ -60,7 +65,7 @@ export default function JobDesc({
   };
   return inSession ? (
     <button
-      className="button my-2 ml-40 mr-5 w-1/2 rounded-lg px-2 py-1 text-gray-500 hover:bg-gray-200 md:mx-20"
+      className="button text-gray-500 hover:bg-gray-200 h-[50px] w-full rounded-lg"
       onClick={reset}
     >
       Try another interview?
@@ -71,8 +76,8 @@ export default function JobDesc({
       value={description}
       onChange={handleDescriptionChange}
       onKeyUp={handleEnter}
-      placeholder="Paste in the job description here..."
-      className="uninteractable border-lightgray bg-gray h-full w-full resize-none rounded-lg border-4"
+      placeholder="Paste the job description here..."
+      className="jobdesc uninteractable h-full w-full resize-none rounded-lg border-4 border-lightgray bg-gray p-2 text-white"
     />
   );
 }

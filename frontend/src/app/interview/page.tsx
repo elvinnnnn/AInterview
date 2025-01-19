@@ -10,7 +10,10 @@ import {
   JobDesc,
   Mascot,
   Preferences,
+  History,
 } from "../components";
+import { Message } from "../types";
+
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
 const HEADERS = {
   "Content-Type": "application/json",
@@ -22,14 +25,15 @@ interface AnswerData {
 }
 
 export default function Interview() {
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userText, setUserText] = useState<string>("");
-  const [botText, setBotText] = useState<string>("");
   const [dbId, setDbId] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [inSession, setInSession] = useState<boolean>(false);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token === null) {
@@ -41,6 +45,7 @@ export default function Interview() {
 
   const handleSendChat = async () => {
     try {
+      setMessages((prev) => [...prev, { isUser: true, text: userText }]);
       setIsListening(true);
       const response = await axios.put(
         `${BACKEND}/api/dialogue`,
@@ -48,7 +53,6 @@ export default function Interview() {
         { headers: HEADERS },
       );
       setUserText("");
-      setBotText("");
       delayedBotText(response.data);
     } catch (error) {
       console.error("Error sending answer:", error);
@@ -64,19 +68,6 @@ export default function Interview() {
     }
   };
 
-  const handleSetBotText = (text: string) => {
-    setBotText(text.charAt(0)); // To handle some unexpected behaviour. This is a workaround.
-    let i = 0;
-    const typeWriter = () => {
-      if (i < text.length) {
-        setBotText((prev) => prev + text.charAt(i));
-        i++;
-        setTimeout(typeWriter, 10);
-      }
-    };
-    typeWriter();
-  };
-
   const handleEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSendChat();
@@ -86,12 +77,12 @@ export default function Interview() {
 
   const delayedBotText = (data: AnswerData) => {
     setTimeout(() => {
-      handleSetBotText(data.text);
+      setMessages((prev) => [...prev, { isUser: false, text: data.text }]);
       if (data.finished) {
         setIsFeedback(true);
       }
       setIsListening(false); // This is for mascot animations.
-    }, 1000);
+    }, 1500);
   };
 
   const handleSetUserText = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -100,27 +91,29 @@ export default function Interview() {
   return (
     <>
       <Navbar />
-      <div className="my-4 flex h-[calc(100vh-96px)] flex-row space-x-4 border-2 xl:mx-24 2xl:mx-96">
-        <div className="flex h-full w-1/3 flex-col space-y-2">
-          <div className="h-full border-2">
+      <div className="my-4 flex h-[calc(100vh-96px)] flex-row space-x-4 xl:mx-24 2xl:mx-96">
+        <div className="flex h-full w-1/3 flex-col">
+          <div className="mb-2 h-auto">
             <JobDesc
-              setBotText={setBotText}
+              setMessages={setMessages}
               setDbId={setDbId}
               setIsLoading={setIsLoading}
               setInSession={setInSession}
               inSession={inSession}
             />
           </div>
-          <Preferences></Preferences>
+          <History />
+          <div className="mb-4"></div>
+          <Preferences />
         </div>
-        <div className="h-full w-2/3 items-center justify-center border-2">
+        <div className="h-full w-2/3 items-center justify-center">
           <Mascot
             loading={isLoading}
             session={inSession}
             listening={isListening}
             frontpage={false}
           />
-          <Chatbox botText={botText} userText={userText} />
+          <Chatbox messages={messages} />
           {isFeedback ? (
             <div className="mx-20 flex items-start p-2">
               <button
@@ -132,7 +125,6 @@ export default function Interview() {
             </div>
           ) : (
             <ChatInput
-              botText={botText}
               userText={userText}
               setUserText={handleSetUserText}
               handleEnter={handleEnter}

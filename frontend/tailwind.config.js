@@ -13,7 +13,7 @@ module.exports = {
       gray: "#1f1f1f",
       lightgray: "#3c3c3c",
       darkblue: "#0f172a",
-      white: "#ffffff",
+      white: "#fffefc",
     },
     extend: {
       spacing: {
