@@ -6,7 +6,7 @@ export default function Textbox({
   isUser: boolean;
 }) {
   return isUser ? (
-    <div className="-z-1 relative my-2 ml-auto flex items-center pl-20">
+    <div className="-z-1 relative my-2 flex items-center justify-end pl-20">
       <div
         id="user-textbox"
         className="flex items-center justify-center p-5 shadow-lg"

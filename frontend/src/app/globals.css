@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  height: 100%;
+}
 .preserve-whitespace {
   white-space: pre; /* or use 'pre' if you want to preserve only spaces and newlines */
 }
 
 .button {
-  background-color: white;
+  background-color: #fffefc;
   border-width: 1px;
 }
 
@@ -19,7 +23,7 @@
 
 #bot-textbox {
   background-color: #7c6fec;
-  color: white;
+  color: #fffefc;
   border-radius: 18px;
 }
 
@@ -33,12 +37,12 @@
 #user-textbox-arrow {
   width: 16px;
   height: 32px;
-  background-color: white;
+  background-color: #fffefc;
   clip-path: polygon(100% 50%, 0 0, 0 100%);
 }
 
 #user-textbox {
-  background-color: white;
+  background-color: #fffefc;
   color: #584cd7;
   border-radius: 18px;
   display: inline-block;
@@ -62,7 +66,7 @@
 }
 
 #title {
-  color: white;
+  color: #fffefc;
   padding: 10px;
   padding-left: 15px;
   -webkit-user-select: none;
@@ -187,12 +191,4 @@ button:hover {
 
 .jobdesc:hover {
   height: 200px;
-}
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #fff;
 }

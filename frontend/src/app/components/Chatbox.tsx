@@ -1,5 +1,7 @@
 import Textbox from "./Textbox";
 import { Message } from "../types";
+import SimpleBar from "simplebar-react";
+import "simplebar-react/dist/simplebar.min.css";
 
 export default function Chatbox({ messages }: { messages: Message[] }) {
   // const handleSetBotText = (text: string) => {
@@ -19,12 +21,19 @@ export default function Chatbox({ messages }: { messages: Message[] }) {
       id="chat-box"
       className="relative flex h-full flex-col border-4 border-lightgray bg-gray"
     >
-      <div className="h-[8%] w-full border-b-4 border-lightgray" />
-      <div className="flex max-h-[84%] flex-col justify-end overflow-y-auto">
+      <div className="h-[10%] w-full border-b-4 border-lightgray" />
+      <SimpleBar
+        style={{
+          height: "84%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <div className="flex-grow"></div>
         {messages.map((message, index) => (
           <Textbox key={index} isUser={message.isUser} input={message.text} />
         ))}
-      </div>
+      </SimpleBar>
       <div className="h-[8%] w-full border-t-4 border-lightgray" />
     </div>
   );

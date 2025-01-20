@@ -25,12 +25,12 @@ interface AnswerData {
 }
 
 export default function Interview() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [userText, setUserText] = useState<string>("");
   const [dbId, setDbId] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [inSession, setInSession] = useState<boolean>(false);
 
