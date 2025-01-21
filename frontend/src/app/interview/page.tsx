@@ -25,14 +25,15 @@ interface AnswerData {
 }
 
 export default function Interview() {
+  const router = useRouter();
   const [messages, setMessages] = useState<Message[]>([]);
   const [userText, setUserText] = useState<string>("");
   const [dbId, setDbId] = useState<string>("");
   const [isListening, setIsListening] = useState<boolean>(false);
   const [isFeedback, setIsFeedback] = useState<boolean>(false);
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [inSession, setInSession] = useState<boolean>(false);
+  const [jobTitle, setJobTitle] = useState<string>("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -54,6 +55,7 @@ export default function Interview() {
       );
       setUserText("");
       delayedBotText(response.data);
+      setJobTitle(response.data.title);
     } catch (error) {
       console.error("Error sending answer:", error);
     }
@@ -99,6 +101,7 @@ export default function Interview() {
               setDbId={setDbId}
               setIsLoading={setIsLoading}
               setInSession={setInSession}
+              setJobTitle={setJobTitle}
               inSession={inSession}
             />
           </div>
@@ -113,7 +116,7 @@ export default function Interview() {
             listening={isListening}
             frontpage={false}
           />
-          <Chatbox messages={messages} />
+          <Chatbox messages={messages} jobTitle={jobTitle} />
           {isFeedback ? (
             <div className="mx-20 flex items-start p-2">
               <button

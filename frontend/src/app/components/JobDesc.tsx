@@ -11,6 +11,7 @@ interface JobDescProps {
   setDbId: React.Dispatch<React.SetStateAction<string>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setInSession: React.Dispatch<React.SetStateAction<boolean>>;
+  setJobTitle: React.Dispatch<React.SetStateAction<string>>;
   inSession: boolean;
 }
 
@@ -19,6 +20,7 @@ export default function JobDesc({
   setDbId,
   setIsLoading,
   setInSession,
+  setJobTitle,
   inSession,
 }: JobDescProps) {
   const [description, setDescription] = useState<string>("");
@@ -40,8 +42,10 @@ export default function JobDesc({
         ...prev,
         { isUser: false, text: res.data.greeting },
       ]);
+      setJobTitle(res.data.title);
       setDbId(res.data.id);
       setInSession(true);
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
