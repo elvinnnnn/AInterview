@@ -107,7 +107,7 @@ public class DialogueController : ControllerBase
         // Returns greeting to immediately display on the frontend
         // Also returns the dialogue_id locate the dialogue for future requests
         var returnPayload = new Dictionary<string, string>
-        {{ "greeting", dialogue.Greeting }, { "id", dialogueId }};
+        {{ "greeting", dialogue.Greeting }, { "id", dialogueId }, {"title", dialogue.JobTitle }};
         return Ok(returnPayload);
     }
 
@@ -142,7 +142,7 @@ public class DialogueController : ControllerBase
         else // This should not run, but if it returns the farewell to indicate end of questions
         {
             returnPayload = new Dictionary<string, dynamic>
-            {{ "text", dialogue.Farewell }, { "finished", true }};
+            {{ "text", dialogue.Farewell }, { "finished", true }, { "title", dialogue.JobTitle }};
             return Ok(returnPayload);
         }
     }
