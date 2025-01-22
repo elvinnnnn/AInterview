@@ -63,7 +63,7 @@ public class UserController : ControllerBase
         if (foundUser is null || !_authService.VerifyPassword(loginUser.Password, foundUser.Password)) {
             return BadRequest(new {message = "Invalid username or password."});
         }
-        var token = _authService.GenerateToken(loginUser);
+        var token = _authService.GenerateToken(foundUser);
         return Ok(new { token, message = "Login Successful" });
     }
     

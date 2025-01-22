@@ -4,6 +4,10 @@ using MongoDB.Driver;
 using MongoDB.Bson;
 using OpenAI.Chat;
 using System.Text.Json;
+using System.Runtime.CompilerServices;
+using Microsoft.AspNetCore.Components.Web;
+using ZstdSharp.Unsafe;
+using System.Linq.Expressions;
 
 namespace backend.Controllers;
 
@@ -21,7 +25,7 @@ public class DialogueController : ControllerBase
         _dialogues = mongoDbService.Database?.GetCollection<Dialogue>("dialogues");
         _client = new ChatClient(model: "gpt-4o-mini", apiKey: _apiKey);
         _messages = new List<ChatMessage>{
-            new SystemChatMessage("You are a job interviewer. You will be provided with a job description. Provide the job title, with the company's name if possible. First give a greeting, then formulate 10 questions based on the job description, but also include general questions at the start. Number these questions by simply providing an integer, do NOT include any words/characters. At the end give a farewell and thank them for coming.")
+            new SystemChatMessage("You are a job interviewer. You will be provided with a job description. Provide the job title, with the company's name if possible. First give a greeting, then formulate 10 questions based on the job description, but also include general questions at the start. Number each message by simply providing an integer, do NOT include any words/characters. At the end give a farewell and thank them for coming. In total there should be 12 messages.")
         };
     }
 
@@ -35,22 +39,20 @@ public class DialogueController : ControllerBase
                 "type": "object",
                 "properties": {
                     "job_title": { "type": "string" },
-                    "greeting": { "type": "string" },
-                    "questions": {
+                    "messages": {
                         "type": "array",
                         "items": {
                             "type": "object",
                             "properties": {
                                 "number": { "type": "string" },
-                                "question": { "type": "string" }
+                                "message": { "type": "string" }
                             },
-                            "required": ["number", "question"],
+                            "required": ["number", "message"],
                             "additionalProperties": false
                         }
-                    },
-                    "farewell": { "type": "string" }
+                    }
                 },
-                "required": ["greeting", "job_title", "questions", "farewell"],
+                "required": ["job_title", "messages"],
                 "additionalProperties": false
             }
             """u8.ToArray()),
@@ -65,8 +67,8 @@ public class DialogueController : ControllerBase
 
     // CREATE NEW DIALOGUE
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] string description) {
-        _messages.Add(new UserChatMessage(description));
+    public async Task<ActionResult> Create([FromBody] CreateDialogueRequest request) {
+        _messages.Add(new UserChatMessage(request.Description));
         ChatCompletion completion;
         try {
             completion = await _client.CompleteChatAsync(_messages, options);
@@ -85,20 +87,19 @@ public class DialogueController : ControllerBase
 
         var dialogue = new Dialogue
         {
-            UserId = "wip",
+            Id = ObjectId.GenerateNewId().ToString(),
+            UserId = request.UserId,
             JobTitle = completionJson.RootElement.GetProperty("job_title").GetString() ?? "",
-            Greeting = completionJson.RootElement.GetProperty("greeting").GetString() ?? "",
-            CurrentQuestionIndex = 0,
-            Questions = new Dictionary<string, Dialogue.QnA>(),
-            Farewell = completionJson.RootElement.GetProperty("farewell").GetString() ?? ""
+            CurrentQuestionIndex = 1,
+            Messages = new Dictionary<string, Dialogue.QnA>()
         };
 
         // Enumerates through a dictionary with keys that are indexes. Array wasn't used due to unpredictable sorting behaviour
-        foreach (JsonElement step in completionJson.RootElement.GetProperty("questions").EnumerateArray())
+        foreach (JsonElement step in completionJson.RootElement.GetProperty("messages").EnumerateArray())
         {
-            dialogue.Questions.Add(step.GetProperty("number").ToString() ?? "-1", new Dialogue.QnA
+            dialogue.Messages.Add(step.GetProperty("number").ToString() ?? "-1", new Dialogue.QnA
             {
-                Question = step.GetProperty("question").GetString() ?? "",
+                Question = step.GetProperty("message").GetString() ?? "",
                 Answer = ""
             });
         }
@@ -107,43 +108,65 @@ public class DialogueController : ControllerBase
         // Returns greeting to immediately display on the frontend
         // Also returns the dialogue_id locate the dialogue for future requests
         var returnPayload = new Dictionary<string, string>
-        {{ "greeting", dialogue.Greeting }, { "id", dialogueId }, {"title", dialogue.JobTitle }};
+        {{ "id", dialogueId }, {"title", dialogue.JobTitle }};
         return Ok(returnPayload);
     }
 
     // UPDATE DIALOGUE IN DATABSE TO INCLUDE ANSWER
     [HttpPut]
     public async Task<ActionResult> Answer(AnswerRequest request) {
-        var filter = Builders<Dialogue>.Filter.Eq("_id", ObjectId.Parse(request.id));
+        var filter = Builders<Dialogue>.Filter.Eq("_id", request.id);
         var dialogue = await _dialogues.Find(filter).FirstOrDefaultAsync();
         if (dialogue == null) {
             throw new Exception("No dialogue found");
         }
         var index = dialogue.CurrentQuestionIndex;
         Dictionary<string, dynamic> returnPayload;
-        if (index <= 10)
+        if (index < 12)
         {
-            if (index > 0) {
-                dialogue.Questions[index.ToString()].Answer = request.answer;
-                var updateQuestions = Builders<Dialogue>.Update.Set(d => d.Questions, dialogue.Questions);
-                /// Update db based on count
-                _dialogues?.UpdateOne(filter, updateQuestions);
-            }
+            dialogue.Messages[index.ToString()].Answer = request.answer;
+
+            var updateMessages = Builders<Dialogue>.Update.Set(d => d.Messages, dialogue.Messages);
+            _dialogues?.UpdateOne(filter, updateMessages);
+
             index++;
             var updateCurrentQuestionIndex = Builders<Dialogue>.Update.Set(d => d.CurrentQuestionIndex, index);
-            _dialogues?.UpdateOne(filter, updateCurrentQuestionIndex);
-            var isFinished = index > 10;
-            var text = isFinished ? dialogue.Farewell : dialogue.Questions[index.ToString()].Question;
+            _dialogues?.UpdateOne(filter, updateCurrentQuestionIndex); 
+
+            var text = dialogue.Messages[index.ToString()].Question;
             returnPayload = new Dictionary<string, dynamic>
-            {{ "text", text }, { "finished", isFinished }};
-            // "finished" required to indicate to the frontend whether the questions have concluded or not.
+            {{ "text", text }, { "finished", false }, { "title", dialogue.JobTitle }};
+            return Ok(returnPayload);
+        } else {
+             returnPayload = new Dictionary<string, dynamic>
+            {{ "finished", true }, { "title", dialogue.JobTitle }};
             return Ok(returnPayload);
         }
-        else // This should not run, but if it returns the farewell to indicate end of questions
-        {
-            returnPayload = new Dictionary<string, dynamic>
-            {{ "text", dialogue.Farewell }, { "finished", true }, { "title", dialogue.JobTitle }};
-            return Ok(returnPayload);
-        }
+    }
+
+    [HttpGet("all")]
+    public async Task<ActionResult> GetAllDialogues([FromQuery] string userId) {
+        if (string.IsNullOrEmpty(userId)) return BadRequest("UserId is required.");
+    
+        var filter = Builders<Dialogue>.Filter.Eq("UserId", userId);
+        var dialogues = await _dialogues.Find(filter).ToListAsync();
+
+        return Ok(dialogues);
+    }
+
+    [HttpGet("one")]
+    public async Task<ActionResult> GetOneDialogue([FromQuery] string dialogueId, [FromQuery] string userId) {
+        if (string.IsNullOrEmpty(dialogueId)) return BadRequest("DialogueId is required.");
+        if (string.IsNullOrEmpty(userId)) return BadRequest("UserId is required.");
+
+        var filter = Builders<Dialogue>.Filter.And(
+            Builders<Dialogue>.Filter.Eq("_id", dialogueId),
+            Builders<Dialogue>.Filter.Eq("UserId", userId)
+        );
+        var dialogue = await _dialogues.Find(filter).FirstOrDefaultAsync();
+    
+        if (dialogue == null) return NotFound("Dialogue not found or you do not have access to it.");
+
+        return Ok(dialogue);
     }
 }

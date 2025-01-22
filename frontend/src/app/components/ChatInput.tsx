@@ -14,18 +14,18 @@ export default function ChatInput({
   handleSendChat,
 }: ChatInputProps) {
   return (
-    <div id="chat-input" className="mx-5 flex items-start">
+    <div className="mx-5 flex items-start">
       <input
         value={userText}
         onChange={setUserText}
         onKeyUp={handleEnter}
         type="text"
         placeholder="Your response..."
-        className="uninteractable mr-1 w-full rounded-lg bg-lightgray px-2 py-1 text-white"
+        className="uninteractable mr-1 h-[50px] w-full rounded-lg bg-lightgray p-2 text-white"
       />
 
       <button
-        className="button text-gray-500 hover:bg-gray-200 ml-1 rounded-lg p-1"
+        className="button text-gray-500 hover:bg-gray-200 ml-1 h-[50px] w-[50px] rounded-lg p-1"
         onClick={handleSendChat}
       >
         <svg
@@ -34,7 +34,7 @@ export default function ChatInput({
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="size-6"
+          className="h-full w-full"
         >
           <path
             strokeLinecap="round"
