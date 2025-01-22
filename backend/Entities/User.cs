@@ -6,7 +6,8 @@ namespace backend
     public class User
     {
         [BsonId]
-        public ObjectId Id { get; set; } // optional to let mongodb generate the id
+        [BsonRepresentation(BsonType.ObjectId)]
+        public ObjectId Id { get; set; } 
         [BsonElement("username")]
         public required string Username { get; set; }
         [BsonElement("password")]

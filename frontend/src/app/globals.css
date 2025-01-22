@@ -86,7 +86,7 @@ body {
 #chat-input {
   z-index: 4;
   position: relative;
-  transform: translateY(-50px);
+  transform: translateY(-64px);
   animation: fade-in 1s;
 }
 

@@ -6,22 +6,23 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 import { Message } from "../types";
+
 interface JobDescProps {
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
-  setDbId: React.Dispatch<React.SetStateAction<string>>;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setInSession: React.Dispatch<React.SetStateAction<boolean>>;
   setJobTitle: React.Dispatch<React.SetStateAction<string>>;
   inSession: boolean;
+  handleDialogueOpen: (dialogueId: string, userId: string) => void;
 }
 
 export default function JobDesc({
   setMessages,
-  setDbId,
   setIsLoading,
   setInSession,
   setJobTitle,
   inSession,
+  handleDialogueOpen,
 }: JobDescProps) {
   const [description, setDescription] = useState<string>("");
 
@@ -34,18 +35,28 @@ export default function JobDesc({
   const handleSendDescription = async () => {
     // Send description to backend OpenAI API
     try {
-      const res = await axios.post(`${BACKEND}/api/dialogue`, description, {
-        headers: HEADERS,
-      });
-      console.log(res.data);
-      setMessages((prev) => [
-        ...prev,
-        { isUser: false, text: res.data.greeting },
-      ]);
-      setJobTitle(res.data.title);
-      setDbId(res.data.id);
-      setInSession(true);
-      setIsLoading(false);
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+      if (token && userId) {
+        const res = await axios.post(
+          `${BACKEND}/api/dialogue`,
+          { description: description, userId: userId },
+          {
+            headers: HEADERS,
+          },
+        );
+        setMessages((prev) => [
+          ...prev,
+          { isUser: false, text: res.data.greeting },
+        ]);
+        console.log(res.data);
+        console.log(res.data.id);
+        setJobTitle(res.data.title);
+        localStorage.setItem("dialogueId", res.data.id);
+        handleDialogueOpen(res.data.id, userId);
+        setInSession(true);
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error(error);
     }
@@ -59,18 +70,13 @@ export default function JobDesc({
     }
   };
 
-  const reset = async () => {
-    try {
-      axios.delete("http://localhost:5000/wipe");
-      window.location.reload();
-    } catch (err) {
-      console.log(err);
-    }
-  };
   return inSession ? (
     <button
       className="button text-gray-500 hover:bg-gray-200 h-[50px] w-full rounded-lg"
-      onClick={reset}
+      onClick={() => {
+        localStorage.removeItem("dialogueId");
+        window.location.reload();
+      }}
     >
       Try another interview?
     </button>

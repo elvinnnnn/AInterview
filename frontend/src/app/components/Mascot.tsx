@@ -30,7 +30,7 @@ const MascotSides = () => (
 const MascotThinkingFace = () => (
   <div
     className={
-      "mascot animate-jump preserve-whitespace absolute text-5xl text-white"
+      "mascot animate-jump thinking preserve-whitespace absolute text-5xl text-white"
     }
   >
     {"  "}

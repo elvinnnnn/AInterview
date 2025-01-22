@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 const BACKEND = process.env.NEXT_PUBLIC_BACKEND_ADDR;
 const HEADERS = {
@@ -26,7 +27,7 @@ export default function Auth({ setMessage, loggedIn }: AuthProps) {
     }
   }, [router]);
 
-  const handleAuth = async (endpoint: string) => {
+  const handleAuth = async (endpoint: "login" | "register") => {
     try {
       const response = await axios.post(
         `${BACKEND}/api/user/${endpoint}`,
@@ -35,6 +36,14 @@ export default function Auth({ setMessage, loggedIn }: AuthProps) {
       );
       console.log(response.data);
       setMessage(response.data.message);
+      const decoded: {
+        id: string;
+        unique_name: string;
+        nbf: number;
+        exp: number;
+        iat: number;
+      } = jwtDecode(response.data.token);
+      localStorage.setItem("userId", decoded.id);
       localStorage.setItem("token", response.data.token);
       setTimeout(() => router.push("/interview"), 1000); // if status OK, do this
     } catch (error) {
@@ -59,16 +68,17 @@ export default function Auth({ setMessage, loggedIn }: AuthProps) {
           onClick={() => {
             router.push("/interview");
           }}
-          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="hover:bg-neutral-800 block w-full rounded-full p-4 px-4 py-2 font-bold text-white dark:bg-white dark:text-black"
         >
           Interview
         </button>
         <button
           onClick={() => {
             localStorage.removeItem("token");
+            localStorage.removeItem("userId");
             router.push("/");
           }}
-          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="hover:bg-neutral-800 block w-full rounded-full p-4 px-4 py-2 font-bold text-white dark:bg-white dark:text-black"
         >
           Logout
         </button>
@@ -99,13 +109,13 @@ export default function Auth({ setMessage, loggedIn }: AuthProps) {
       <div className="flex">
         <button
           onClick={handleLogin}
-          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="hover:bg-neutral-800 block w-full rounded-full p-4 px-4 py-2 font-bold text-white dark:bg-white dark:text-black"
         >
           Login
         </button>
         <button
           onClick={handleRegister}
-          className="block w-full rounded-full p-4 px-4 py-2 font-bold text-white hover:bg-neutral-800 dark:bg-white dark:text-black"
+          className="hover:bg-neutral-800 block w-full rounded-full p-4 px-4 py-2 font-bold text-white dark:bg-white dark:text-black"
         >
           Register
         </button>
